@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance Inspection Report</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<!-- PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-soft: #4a4a6a;
+    --paper: #f8f7f4;
+    --white: #ffffff;
+    --accent: #1b4f8a;
+    --accent-light: #e8f0fa;
+    --accent-pale: #f0f5fc;
+    --gold: #c8922a;
+    --gold-light: #fdf3e0;
+    --success: #1a7a4a;
+    --success-light: #e6f5ed;
+    --danger: #c0392b;
+    --danger-light: #fdecea;
+    --border: #d8d8e8;
+    --border-strong: #b0b0cc;
+    --shadow-sm: 0 1px 4px rgba(26,26,46,0.07);
+    --shadow-md: 0 4px 20px rgba(26,26,46,0.10);
+    --shadow-lg: 0 8px 40px rgba(26,26,46,0.14);
+    --radius: 10px;
+    --radius-lg: 16px;
+    --font-head: 'Georgia', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── AUTH SCREEN ── */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f2c54 0%, #1b4f8a 60%, #2563a8 100%);
+  }
+
+  .auth-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 52px 44px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .auth-logo {
+    width: 64px; height: 64px;
+    background: var(--accent);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+
+  .auth-card h1 {
+    font-family: var(--font-head);
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .auth-card p {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 20px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+  }
+  .btn-google:hover { background: var(--paper); border-color: var(--accent); }
+  .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .auth-error {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--danger-light);
+    border: 1px solid #f5c6c2;
+    border-radius: 8px;
+    color: var(--danger);
+    font-size: 13px;
+    display: none;
+  }
+
+  /* ── APP SHELL ── */
+  #app { display: none; }
+
+  .top-bar {
+    background: var(--white);
+    border-bottom: 1.5px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .top-bar-left {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: white;
+  }
+
+  .top-bar-title {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .top-bar-right {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: var(--accent-light);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .user-chip img {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .btn-signout {
+    padding: 6px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 7px;
+    background: white;
+    color: var(--ink-soft);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-signout:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── HOME VIEW ── */
+  #view-home .hero {
+    text-align: center;
+    padding: 48px 0 36px;
+  }
+
+  #view-home .hero h2 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  #view-home .hero p {
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  .home-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 36px;
+  }
+
+  .action-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    width: 260px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+  }
+  .action-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .action-card .icon { font-size: 36px; margin-bottom: 14px; }
+  .action-card h3 { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .action-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ── FORM VIEWS ── */
+  .view-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .btn-back {
+    background: none; border: none; cursor: pointer;
+    color: var(--accent); font-size: 15px;
+    display: flex; align-items: center; gap: 5px;
+    padding: 0; font-weight: 500;
+  }
+  .btn-back:hover { text-decoration: underline; }
+
+  .view-header h2 {
+    font-family: var(--font-head);
+    font-size: 22px;
+    color: var(--ink);
+  }
+
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-title {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1.5px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-row.full { grid-template-columns: 1fr; }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-control {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color 0.15s;
+    font-family: var(--font-body);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(27,79,138,0.10);
+  }
+
+  select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a4a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  .custom-option-toggle {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--accent);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* ── STEP INDICATOR ── */
+  .steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 28px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+  }
+
+  .step {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    flex: 1;
+  }
+
+  .step.active { color: var(--accent); font-weight: 600; }
+  .step.done { color: var(--success); }
+
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step.active .step-num { background: var(--accent); color: white; }
+  .step.done .step-num { background: var(--success); color: white; }
+
+  .step-divider {
+    flex: 0.5;
+    height: 2px;
+    background: var(--border);
+    margin: 0 8px;
+  }
+  .step-divider.done { background: var(--success); }
+
+  /* ── IMAGE UPLOAD ZONE ── */
+  .upload-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--paper);
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+  }
+  .upload-zone .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-zone p { color: var(--ink-soft); font-size: 13.5px; }
+  .upload-zone strong { color: var(--accent); }
+
+  /* ── IMAGE POOL ── */
+  .image-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    min-height: 60px;
+  }
+
+  .pool-thumb {
+    width: 80px; height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    cursor: grab;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .pool-thumb:hover { border-color: var(--accent); transform: scale(1.05); }
+  .pool-thumb.dragging { opacity: 0.4; }
+  .pool-thumb.used { opacity: 0.35; filter: grayscale(1); }
+
+  /* ── FINDINGS TABLE ── */
+  .findings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+  }
+
+  .findings-table th {
+    background: var(--accent);
+    color: white;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .findings-table th:first-child { border-radius: 8px 0 0 0; }
+  .findings-table th:last-child { border-radius: 0 8px 0 0; }
+
+  .findings-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .findings-table tr:last-child td { border-bottom: none; }
+  .findings-table tr:nth-child(even) td { background: var(--paper); }
+
+  .row-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  .td-before-img {
+    width: 110px;
+  }
+
+  .td-after-img {
+    width: 110px;
+  }
+
+  .img-cell {
+    width: 90px; height: 70px;
+    border-radius: 6px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .drop-slot {
+    width: 90px; height: 70px;
+    border: 2px dashed var(--border-strong);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .drop-slot:hover, .drop-slot.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+    color: var(--accent);
+  }
+  .drop-slot span { font-size: 20px; }
+
+  .findings-select {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    color: var(--ink);
+    cursor: pointer;
+    margin-bottom: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%234a4a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px;
+  }
+
+  .remarks-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    resize: vertical;
+    min-height: 50px;
+    color: var(--ink);
+  }
+  .remarks-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(27,79,138,0.08);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #163d70; }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--ink);
+    border: 1.5px solid var(--border-strong);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  .btn-success:hover { background: #155e38; }
+
+  .btn-gold {
+    background: var(--gold);
+    color: white;
+  }
+  .btn-gold:hover { background: #a87222; }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  .btn-sm {
+    padding: 7px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+
+  .btn-row {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1.5px solid var(--border);
+  }
+
+  .btn-row .spacer { flex: 1; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  /* ── NOTICE BANNERS ── */
+  .notice {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .notice-info { background: var(--accent-light); color: var(--accent); border: 1px solid #c0d5f0; }
+  .notice-success { background: var(--success-light); color: var(--success); border: 1px solid #b0dfc0; }
+  .notice-gold { background: var(--gold-light); color: #8a5a10; border: 1px solid #f0d090; }
+
+  /* ── PDF PREVIEW ── */
+  #pdf-preview-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,30,0.65);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #pdf-preview-container.open { display: flex; }
+
+  .pdf-modal {
+    background: white;
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 840px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .pdf-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .pdf-modal-header h3 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .pdf-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .pdf-modal-footer {
+    padding: 16px 20px;
+    border-top: 1.5px solid var(--border);
+    display: flex; gap: 10px; align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── REPORT PREVIEW ── */
+  #report-output {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #000;
+  }
+
+  .report-page {
+    background: white;
+    width: 100%;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .report-page-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    font-size: 11px;
+    color: #444;
+  }
+
+  .report-main-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 40px 0;
+    line-height: 1.2;
+  }
+
+  .report-info-box {
+    border: 2px solid #000;
+    padding: 16px 20px;
+    margin: 24px auto;
+    max-width: 360px;
+  }
+
+  .report-info-row {
+    display: flex; gap: 12px;
+    padding: 5px 0;
+    font-size: 13px;
+  }
+
+  .report-info-label { font-weight: 700; min-width: 130px; }
+
+  .report-page-footer {
+    display: flex; justify-content: space-between;
+    border-top: 1.5px solid #888;
+    padding-top: 8px;
+    margin-top: 24px;
+    font-size: 10.5px;
+    color: #555;
+  }
+
+  .report-findings-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+
+  .report-table th {
+    background: #000;
+    color: white;
+    padding: 8px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .report-table td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  .report-table tr:nth-child(even) td { background: #f9f9f9; }
+
+  .report-img {
+    max-width: 130px;
+    max-height: 100px;
+    object-fit: cover;
+    display: block;
+    margin: auto;
+    border-radius: 3px;
+  }
+
+  /* ── LOADING ── */
+  .loader {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── UPDATE MODE ── */
+  .update-section {
+    background: var(--gold-light);
+    border: 1.5px solid #e8c870;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .auth-card { padding: 36px 24px; }
+    .home-actions { flex-direction: column; align-items: center; }
+    .top-bar-title { display: none; }
+    .findings-table { font-size: 12px; }
+    .td-before-img, .td-after-img { width: 80px; }
+    .img-cell, .drop-slot { width: 70px; height: 55px; }
+    .pool-thumb { width: 64px; height: 64px; }
+    .steps { flex-wrap: wrap; gap: 8px; }
+    .step-divider { display: none; }
+    .main-content { padding: 20px 14px 60px; }
+  }
+
+  /* ── TAG ── */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .badge-gold { background: var(--gold-light); color: #8a5a10; }
+
+  .divider { height: 1.5px; background: var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══ AUTH SCREEN ═══ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">📋</div>
+    <h1>Inspection Report Portal</h1>
+    <p>Emirates Properties LLC — secure access for authorised personnel only. Sign in with your approved Google account.</p>
+    <button class="btn-google" id="btn-signin">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Sign in with Google
+    </button>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="logo-mark">📋</div>
+      <span class="top-bar-title">Inspection Report Portal</span>
+    </div>
+    <div class="top-bar-right">
+      <div class="user-chip">
+        <img id="user-photo" src="" alt="avatar" onerror="this.style.display='none'">
+        <span id="user-name"></span>
+      </div>
+      <button class="btn-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- HOME -->
+    <div id="view-home">
+      <div class="hero">
+        <h2>Maintenance Inspection Report</h2>
+        <p>Generate professional inspection reports with photo documentation</p>
+      </div>
+      <div class="home-actions">
+        <div class="action-card" onclick="startNewReport()">
+          <div class="icon">📄</div>
+          <h3>Generate Report</h3>
+          <p>Create a new maintenance inspection report with photos and findings</p>
+        </div>
+        <div class="action-card" onclick="startUpdateReport()">
+          <div class="icon">✏️</div>
+          <h3>Update Report</h3>
+          <p>Upload an existing report and add after pictures and updated remarks</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW REPORT: STEP 1 — Report Details -->
+    <div id="view-step1" style="display:none">
+      <div class="view-header">
+        <button class="btn-back" onclick="goHome()">← Back</button>
+        <h2>New Inspection Report</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step active" id="step1-ind">
+          <div class="step-num">1</div>
+          <span>Report Details</span>
+        </div>
+        <div class="step-divider" id="div1"></div>
+        <div class="step" id="step2-ind">
+          <div class="step-num">2</div>
+          <span>Upload Before Photos</span>
+        </div>
+        <div class="step-divider" id="div2"></div>
+        <div class="step" id="step3-ind">
+          <div class="step-num">3</div>
+          <span>Arrange Findings</span>
+        </div>
+        <div class="step-divider" id="div3"></div>
+        <div class="step" id="step4-ind">
+          <div class="step-num">4</div>
+          <span>After Photos</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏢 Report Information</div>
+
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Building Name *</label>
+            <input type="text" class="form-control" id="inp-building" placeholder="e.g. Al Falasi Building 2">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Inspection Type *</label>
+            <select class="form-control" id="inp-type" onchange="handleTypeChange()">
+              <option value="">— Select type —</option>
+              <option value="Maintenance Inspection">Maintenance Inspection</option>
+              <option value="Fire Safety Inspection">Fire Safety Inspection</option>
+              <option value="Electrical Inspection">Electrical Inspection</option>
+              <option value="Plumbing Inspection">Plumbing Inspection</option>
+              <option value="Structural Inspection">Structural Inspection</option>
+              <option value="Annual Inspection">Annual Inspection</option>
+              <option value="__custom__">+ Add custom type…</option>
+            </select>
+            <input type="text" class="form-control" id="inp-type-custom" placeholder="Enter custom inspection type" style="display:none;margin-top:8px">
+          </div>
+
+          <div class="form-group">
+            <label>Report Date *</label>
+            <input type="date" class="form-control" id="inp-date">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <div class="spacer"></div>
+          <button class="btn btn-primary" onclick="goToStep2()">Next: Upload Photos →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW REPORT: STEP 2 — Upload Before Photos -->
+    <div id="view-step2" style="display:none">
+      <div class="view-header">
+        <button class="btn-back" onclick="showView('view-step1')">← Back</button>
+        <h2>Upload Before Photos</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step done" id="s1a"><div class="step-num">✓</div><span>Report Details</span></div>
+        <div class="step-divider done"></div>
+        <div class="step active"><div class="step-num">2</div><span>Upload Before Photos</span></div>
+        <div class="step-divider"></div>
+        <div class="step"><div class="step-num">3</div><span>Arrange Findings</span></div>
+        <div class="step-divider"></div>
+        <div class="step"><div class="step-num">4</div><span>After Photos</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📸 Before Condition Photos</div>
+        <div class="notice notice-info">ℹ️ Upload all before-condition photos. Each image will become one row in the findings table. You can reorder them in the next step.</div>
+
+        <div class="upload-zone" id="before-dropzone" onclick="document.getElementById('before-files').click()" ondragover="handleDragOver(event,'before-dropzone')" ondragleave="handleDragLeave('before-dropzone')" ondrop="handleDrop(event,'before')">
+          <div class="upload-icon">📁</div>
+          <p><strong>Click to select photos</strong> or drag & drop here</p>
+          <p style="margin-top:4px;font-size:12px">Select multiple files at once · JPG, PNG, WEBP</p>
+        </div>
+        <input type="file" id="before-files" accept="image/*" multiple style="display:none" onchange="handleBeforeFiles(event)">
+
+        <div class="image-pool" id="before-pool"></div>
+
+        <div id="before-count-notice" style="display:none;margin-top:12px">
+          <span class="badge badge-blue" id="before-count-badge"></span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="showView('view-step1')">← Back</button>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" onclick="goToStep3()">Next: Arrange Findings →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW REPORT: STEP 3 — Findings Table -->
+    <div id="view-step3" style="display:none">
+      <div class="view-header">
+        <button class="btn-back" onclick="showView('view-step2')">← Back</button>
+        <h2>Findings & Remarks</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step done"><div class="step-num">✓</div><span>Report Details</span></div>
+        <div class="step-divider done"></div>
+        <div class="step done"><div class="step-num">✓</div><span>Before Photos</span></div>
+        <div class="step-divider done"></div>
+        <div class="step active"><div class="step-num">3</div><span>Arrange Findings</span></div>
+        <div class="step-divider"></div>
+        <div class="step"><div class="step-num">4</div><span>After Photos</span></div>
+      </div>
+
+      <div class="notice notice-gold">💡 Each row has a "Findings" dropdown. Select the appropriate finding for each before photo. Add remarks in the text box.</div>
+
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">📋 Inspection Findings Table</div>
+        <table class="findings-table" id="findings-table">
+          <thead>
+            <tr>
+              <th style="width:34px">#</th>
+              <th>Findings</th>
+              <th class="td-before-img">Before Picture</th>
+              <th class="td-after-img">After Picture</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="findings-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showView('view-step2')">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" onclick="goToStep4()">Next: After Photos →</button>
+      </div>
+    </div>
+
+    <!-- NEW REPORT: STEP 4 — After Photos + Generate -->
+    <div id="view-step4" style="display:none">
+      <div class="view-header">
+        <button class="btn-back" onclick="showView('view-step3')">← Back</button>
+        <h2>After Condition Photos</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step done"><div class="step-num">✓</div><span>Report Details</span></div>
+        <div class="step-divider done"></div>
+        <div class="step done"><div class="step-num">✓</div><span>Before Photos</span></div>
+        <div class="step-divider done"></div>
+        <div class="step done"><div class="step-num">✓</div><span>Findings</span></div>
+        <div class="step-divider done"></div>
+        <div class="step active"><div class="step-num">4</div><span>After Photos</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📸 After Condition Photos (Optional)</div>
+        <div class="notice notice-info">ℹ️ Upload all after-condition photos. Then drag each thumbnail into the correct row's "After Picture" slot in the table below.</div>
+
+        <div class="upload-zone" id="after-dropzone" onclick="document.getElementById('after-files').click()" ondragover="handleDragOver(event,'after-dropzone')" ondragleave="handleDragLeave('after-dropzone')" ondrop="handleDrop(event,'after')">
+          <div class="upload-icon">📁</div>
+          <p><strong>Click to select after photos</strong> or drag & drop</p>
+          <p style="margin-top:4px;font-size:12px">Select multiple files at once · JPG, PNG, WEBP</p>
+        </div>
+        <input type="file" id="after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFiles(event)">
+
+        <div id="after-pool-wrapper" style="display:none;margin-top:16px">
+          <p style="font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">DRAG PHOTOS INTO TABLE ROWS BELOW ↓</p>
+          <div class="image-pool" id="after-pool"></div>
+        </div>
+      </div>
+
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">📋 Drop After Photos into Rows</div>
+        <table class="findings-table" id="findings-table-step4">
+          <thead>
+            <tr>
+              <th style="width:34px">#</th>
+              <th>Findings</th>
+              <th class="td-before-img">Before Picture</th>
+              <th class="td-after-img">After Picture (Drop Here)</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="findings-tbody-step4"></tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showView('view-step3')">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn btn-success" onclick="generateReport()">
+          <span id="gen-label">🔨 Generate Report</span>
+          <span id="gen-loader" style="display:none"><span class="loader"></span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- UPDATE REPORT MODE -->
+    <div id="view-update" style="display:none">
+      <div class="view-header">
+        <button class="btn-back" onclick="goHome()">← Back</button>
+        <h2>Update Existing Report</h2>
+      </div>
+
+      <div class="notice notice-gold">✏️ Upload after-condition photos and drag them into the slots. Edit remarks as needed, then re-generate the updated report.</div>
+
+      <div class="card">
+        <div class="card-title">⬆️ Upload New After Photos</div>
+        <div class="upload-zone" id="update-after-dropzone" onclick="document.getElementById('update-after-files').click()" ondragover="handleDragOver(event,'update-after-dropzone')" ondragleave="handleDragLeave('update-after-dropzone')" ondrop="handleDrop(event,'update-after')">
+          <div class="upload-icon">📁</div>
+          <p><strong>Click or drag</strong> to upload after-condition photos</p>
+        </div>
+        <input type="file" id="update-after-files" accept="image/*" multiple style="display:none" onchange="handleUpdateAfterFiles(event)">
+        <div class="image-pool" id="update-after-pool" style="margin-top:16px"></div>
+      </div>
+
+      <div class="card" style="overflow-x:auto" id="update-findings-card" style="display:none">
+        <div class="card-title">📋 Update Findings Table</div>
+        <table class="findings-table" id="update-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Findings</th>
+              <th>Before Picture</th>
+              <th>After Picture (Drop Here)</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="update-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="btn-row" id="update-actions" style="display:none">
+        <div class="spacer"></div>
+        <button class="btn btn-success" onclick="generateReport(true)">🔨 Generate Updated Report</button>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app -->
+
+<!-- ═══ PDF PREVIEW MODAL ═══ -->
+<div id="pdf-preview-container">
+  <div class="pdf-modal">
+    <div class="pdf-modal-header">
+      <h3>📄 Report Preview</h3>
+      <button class="btn btn-secondary btn-sm" onclick="closePreview()">✕ Close</button>
+    </div>
+    <div class="pdf-modal-body">
+      <div id="report-output"></div>
+    </div>
+    <div class="pdf-modal-footer">
+      <button class="btn btn-success" onclick="downloadPDF()">
+        <span id="dl-label">⬇️ Download PDF</span>
+        <span id="dl-loader" style="display:none"><span class="loader"></span></span>
+      </button>
+      <button class="btn btn-secondary" onclick="closePreview()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIGURATION — EDIT THESE VALUES
+// ═══════════════════════════════════════════════
+
+const FIREBASE_CONFIG = {
+  // STEP 1: Go to https://console.firebase.google.com
+  // Create a project → Add web app → Copy config here
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// STEP 2: Add BOTH allowed Gmail addresses here (yours + the other person)
+const ALLOWED_EMAILS = [
+  "your.email@gmail.com",
+  "colleague.email@gmail.com"
+];
+
+// ═══════════════════════════════════════════════
+//  PREDEFINED FINDINGS (add/edit as needed)
+// ═══════════════════════════════════════════════
+const FINDINGS_OPTIONS = [
+  "Entrance painting required / façade cleaning required",
+  "Entrance area wall cracked",
+  "Skirting damaged - building outer walls",
+  "Deep cleaning of grills",
+  "Painting required at exit area and garbage room",
+  "Wall crack at outer walls",
+  "Full building painting",
+  "Parking area and its entrance deep cleaning",
+  "Parking area wall cracked",
+  "Parking area painting required",
+  "Column protectors damaged",
+  "Light not working in parking area",
+  "Sign board damaged",
+  "Paint damaged",
+  "Staircase painting required",
+  "AC outer unit missing in parking area",
+  "Lift lobby basement painting required",
+  "Deep cleaning required at reception",
+  "Painting required at reception",
+  "Reception side entrance painting required",
+  "Lift deep cleaning required",
+  "Floor and wall tiles cleaning required",
+  "Air well cleaning required",
+  "AC not working",
+  "Ceiling painting required",
+  "Kids play area painting required",
+  "Kids play area cleaning required",
+  "Ceiling light not working",
+  "Floor deep cleaning required",
+  "Outdoor units PPM required",
+  "Other (see remarks)"
+];
+
+// ═══════════════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════════════
+let state = {
+  building: '',
+  inspectionType: '',
+  reportDate: '',
+  beforeImages: [],   // {id, name, dataURL}
+  afterImages: [],    // {id, name, dataURL}
+  rows: [],           // {finding, beforeId, afterId, remarks}
+  isUpdateMode: false,
+  updateAfterImages: []
+};
+
+let draggedThumb = null;
+let dragSource = null; // 'after' | 'update-after'
+
+// ═══════════════════════════════════════════════
+//  FIREBASE INIT & AUTH
+// ═══════════════════════════════════════════════
+let auth;
+
+// Demo mode if no Firebase config
+const IS_DEMO = FIREBASE_CONFIG.apiKey === "YOUR_API_KEY";
+
+if (!IS_DEMO) {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  auth = firebase.auth();
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      if (!ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
+        auth.signOut();
+        showAuthError("Access denied. Your account (" + user.email + ") is not authorised.");
+        return;
+      }
+      showApp(user);
+    } else {
+      showAuthScreen();
+    }
+  });
+
+  document.getElementById('btn-signin').onclick = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err => {
+      showAuthError(err.message);
+    });
+  };
+} else {
+  // DEMO MODE — skip auth for testing
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-name').textContent = 'Demo User';
+  initApp();
+}
+
+function showApp(user) {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-name').textContent = user.displayName || user.email;
+  if (user.photoURL) document.getElementById('user-photo').src = user.photoURL;
+  initApp();
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function signOut() {
+  if (IS_DEMO) return;
+  auth.signOut();
+}
+
+// ═══════════════════════════════════════════════
+//  VIEW MANAGEMENT
+// ═══════════════════════════════════════════════
+function showView(id) {
+  ['view-home','view-step1','view-step2','view-step3','view-step4','view-update'].forEach(v => {
+    document.getElementById(v).style.display = 'none';
+  });
+  document.getElementById(id).style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function goHome() { showView('view-home'); resetState(); }
+
+function initApp() {
+  // Set default date
+  const today = new Date().toISOString().split('T')[0];
+  const d = document.getElementById('inp-date');
+  if (d) d.value = today;
+  showView('view-home');
+}
+
+function resetState() {
+  state = {
+    building: '', inspectionType: '', reportDate: '',
+    beforeImages: [], afterImages: [], rows: [],
+    isUpdateMode: false, updateAfterImages: []
+  };
+}
+
+// ═══════════════════════════════════════════════
+//  STEP NAVIGATION
+// ═══════════════════════════════════════════════
+function startNewReport() {
+  state.isUpdateMode = false;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('inp-date').value = today;
+  showView('view-step1');
+}
+
+function startUpdateReport() {
+  state.isUpdateMode = true;
+  // For demo/update mode: we pre-populate with sample rows
+  // In real use, the "before" data is already in state from a previous session
+  // We'll show the update view which lets them add after photos & edit remarks
+  if (state.rows.length === 0) {
+    alert("Please first generate a report in this session. Then use Update Report to add after photos. (In production, data would persist via Firebase.)");
+    return;
+  }
+  document.getElementById('update-findings-card').style.display = 'block';
+  document.getElementById('update-actions').style.display = 'flex';
+  buildUpdateTable();
+  showView('view-update');
+}
+
+function handleTypeChange() {
+  const sel = document.getElementById('inp-type');
+  const custom = document.getElementById('inp-type-custom');
+  custom.style.display = sel.value === '__custom__' ? 'block' : 'none';
+}
+
+function goToStep2() {
+  const building = document.getElementById('inp-building').value.trim();
+  const typeEl = document.getElementById('inp-type');
+  const typeCustom = document.getElementById('inp-type-custom').value.trim();
+  const type = typeEl.value === '__custom__' ? typeCustom : typeEl.value;
+  const date = document.getElementById('inp-date').value;
+
+  if (!building) { alert('Please enter the building name.'); return; }
+  if (!type) { alert('Please select or enter the inspection type.'); return; }
+  if (!date) { alert('Please select a report date.'); return; }
+
+  state.building = building;
+  state.inspectionType = type;
+  state.reportDate = date;
+  showView('view-step2');
+}
+
+function goToStep3() {
+  if (state.beforeImages.length === 0) {
+    alert('Please upload at least one before photo.');
+    return;
+  }
+  buildFindingsTable();
+  showView('view-step3');
+}
+
+function goToStep4() {
+  // Save current findings from table
+  saveFindings();
+  buildStep4Table();
+  showView('view-step4');
+}
+
+// ═══════════════════════════════════════════════
+//  FILE HANDLING
+// ═══════════════════════════════════════════════
+function readFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve({ id: Date.now() + Math.random(), name: file.name, dataURL: e.target.result });
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleBeforeFiles(event) {
+  const files = Array.from(event.target.files);
+  for (const f of files) {
+    const img = await readFile(f);
+    state.beforeImages.push(img);
+  }
+  renderBeforePool();
+  document.getElementById('before-count-notice').style.display = 'block';
+  document.getElementById('before-count-badge').textContent = state.beforeImages.length + ' photo(s) ready';
+  event.target.value = '';
+}
+
+async function handleAfterFiles(event) {
+  const files = Array.from(event.target.files);
+  for (const f of files) {
+    const img = await readFile(f);
+    state.afterImages.push(img);
+  }
+  renderAfterPool();
+  document.getElementById('after-pool-wrapper').style.display = 'block';
+  event.target.value = '';
+}
+
+async function handleUpdateAfterFiles(event) {
+  const files = Array.from(event.target.files);
+  for (const f of files) {
+    const img = await readFile(f);
+    state.updateAfterImages.push(img);
+  }
+  renderUpdateAfterPool();
+  document.getElementById('update-findings-card').style.display = 'block';
+  document.getElementById('update-actions').style.display = 'flex';
+  buildUpdateTable();
+  event.target.value = '';
+}
+
+// Drag-over zones (upload zone)
+function handleDragOver(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.add('dragover');
+}
+
+function handleDragLeave(zoneId) {
+  document.getElementById(zoneId).classList.remove('dragover');
+}
+
+async function handleDrop(e, type) {
+  e.preventDefault();
+  const zoneMap = { before:'before-dropzone', after:'after-dropzone', 'update-after':'update-after-dropzone' };
+  document.getElementById(zoneMap[type]).classList.remove('dragover');
+
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (type === 'before') {
+    for (const f of files) { state.beforeImages.push(await readFile(f)); }
+    renderBeforePool();
+    document.getElementById('before-count-notice').style.display = 'block';
+    document.getElementById('before-count-badge').textContent = state.beforeImages.length + ' photo(s) ready';
+  } else if (type === 'after') {
+    for (const f of files) { state.afterImages.push(await readFile(f)); }
+    renderAfterPool();
+    document.getElementById('after-pool-wrapper').style.display = 'block';
+  } else if (type === 'update-after') {
+    for (const f of files) { state.updateAfterImages.push(await readFile(f)); }
+    renderUpdateAfterPool();
+    document.getElementById('update-findings-card').style.display = 'block';
+    document.getElementById('update-actions').style.display = 'flex';
+    buildUpdateTable();
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  IMAGE POOLS (thumbnails)
+// ═══════════════════════════════════════════════
+function renderBeforePool() {
+  const pool = document.getElementById('before-pool');
+  pool.innerHTML = '';
+  state.beforeImages.forEach((img, i) => {
+    const el = document.createElement('img');
+    el.className = 'pool-thumb';
+    el.src = img.dataURL;
+    el.title = img.name;
+    pool.appendChild(el);
+  });
+}
+
+function renderAfterPool() {
+  const pool = document.getElementById('after-pool');
+  pool.innerHTML = '';
+  state.afterImages.forEach((img, i) => {
+    const el = document.createElement('img');
+    el.className = 'pool-thumb';
+    el.src = img.dataURL;
+    el.title = img.name;
+    el.draggable = true;
+    el.dataset.imgId = img.id;
+    el.dataset.source = 'after';
+    el.addEventListener('dragstart', onThumbDragStart);
+    pool.appendChild(el);
+  });
+}
+
+function renderUpdateAfterPool() {
+  const pool = document.getElementById('update-after-pool');
+  pool.innerHTML = '';
+  state.updateAfterImages.forEach((img) => {
+    const el = document.createElement('img');
+    el.className = 'pool-thumb';
+    el.src = img.dataURL;
+    el.title = img.name;
+    el.draggable = true;
+    el.dataset.imgId = img.id;
+    el.dataset.source = 'update-after';
+    el.addEventListener('dragstart', onThumbDragStart);
+    pool.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  FINDINGS TABLE (Step 3)
+// ═══════════════════════════════════════════════
+function buildFindingsTable() {
+  const tbody = document.getElementById('findings-tbody');
+  tbody.innerHTML = '';
+
+  // Ensure rows match image count
+  while (state.rows.length < state.beforeImages.length) {
+    state.rows.push({ finding: '', beforeId: null, afterId: null, remarks: '' });
+  }
+  state.rows.length = state.beforeImages.length;
+
+  state.beforeImages.forEach((img, i) => {
+    state.rows[i].beforeId = img.id;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="row-num">${i+1}</span></td>
+      <td>
+        <select class="findings-select" data-row="${i}" onchange="saveRowFinding(${i},this)">
+          <option value="">— Select finding —</option>
+          ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${state.rows[i].finding===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </td>
+      <td class="td-before-img">
+        <img class="img-cell" src="${img.dataURL}" alt="Before ${i+1}">
+      </td>
+      <td class="td-after-img">
+        <div id="after-slot-s3-${i}" style="font-size:12px;color:var(--ink-soft);padding:4px">(assigned in step 4)</div>
+      </td>
+      <td>
+        <textarea class="remarks-input" data-row="${i}" onchange="saveRowRemarks(${i},this)" placeholder="Enter remarks…">${state.rows[i].remarks||''}</textarea>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function saveRowFinding(i, el) { state.rows[i].finding = el.value; }
+function saveRowRemarks(i, el) { state.rows[i].remarks = el.value; }
+
+function saveFindings() {
+  // Read current table values
+  document.querySelectorAll('.findings-select[data-row]').forEach(el => {
+    const i = parseInt(el.dataset.row);
+    if (state.rows[i]) state.rows[i].finding = el.value;
+  });
+  document.querySelectorAll('.remarks-input[data-row]').forEach(el => {
+    const i = parseInt(el.dataset.row);
+    if (state.rows[i]) state.rows[i].remarks = el.value;
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  STEP 4 TABLE (drag-drop after photos)
+// ═══════════════════════════════════════════════
+function buildStep4Table() {
+  const tbody = document.getElementById('findings-tbody-step4');
+  tbody.innerHTML = '';
+
+  state.rows.forEach((row, i) => {
+    const bImg = state.beforeImages.find(x => x.id === row.beforeId);
+    const aImg = state.afterImages.find(x => x.id === row.afterId);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="row-num">${i+1}</span></td>
+      <td style="font-size:12.5px;max-width:160px">${row.finding || '<em style="color:#aaa">Not set</em>'}</td>
+      <td class="td-before-img">
+        ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
+      </td>
+      <td class="td-after-img">
+        <div class="drop-slot" id="slot-${i}"
+             ondragover="slotDragOver(event,${i})"
+             ondragleave="slotDragLeave(${i})"
+             ondrop="slotDrop(event,${i},'after')"
+             onclick="slotClick(${i},'after')">
+          ${aImg
+            ? `<img class="img-cell" src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`
+            : `<span>📷</span><span style="font-size:10px">Drop here</span>`}
+        </div>
+      </td>
+      <td style="font-size:12.5px;max-width:180px">${row.remarks || '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  UPDATE TABLE
+// ═══════════════════════════════════════════════
+function buildUpdateTable() {
+  const tbody = document.getElementById('update-tbody');
+  tbody.innerHTML = '';
+
+  state.rows.forEach((row, i) => {
+    const bImg = state.beforeImages.find(x => x.id === row.beforeId);
+    const aImg = state.updateAfterImages.find(x => x.id === row.afterId);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="row-num">${i+1}</span></td>
+      <td style="font-size:12.5px">
+        <select class="findings-select" data-row="${i}" onchange="saveRowFinding(${i},this)">
+          <option value="">— Select finding —</option>
+          ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${row.finding===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </td>
+      <td class="td-before-img">
+        ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
+      </td>
+      <td class="td-after-img">
+        <div class="drop-slot" id="update-slot-${i}"
+             ondragover="slotDragOver(event,${i})"
+             ondragleave="slotDragLeave(${i})"
+             ondrop="slotDrop(event,${i},'update-after')"
+             onclick="slotClick(${i},'update-after')">
+          ${aImg
+            ? `<img class="img-cell" src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`
+            : `<span>📷</span><span style="font-size:10px">Drop here</span>`}
+        </div>
+      </td>
+      <td>
+        <textarea class="remarks-input" data-row="${i}" onchange="saveRowRemarks(${i},this)" placeholder="Remarks…">${row.remarks||''}</textarea>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  DRAG & DROP — AFTER PHOTOS INTO SLOTS
+// ═══════════════════════════════════════════════
+function onThumbDragStart(e) {
+  draggedThumb = e.target;
+  dragSource = e.target.dataset.source;
+  e.dataTransfer.setData('text/plain', e.target.dataset.imgId);
+  setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+
+function slotDragOver(e, rowIdx) {
+  e.preventDefault();
+  const slotId = state.isUpdateMode ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
+  document.getElementById(slotId).classList.add('drag-over');
+}
+
+function slotDragLeave(rowIdx) {
+  const slotId = state.isUpdateMode ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
+  const el = document.getElementById(slotId);
+  if (el) el.classList.remove('drag-over');
+}
+
+function slotDrop(e, rowIdx, source) {
+  e.preventDefault();
+  const imgId = parseFloat(e.dataTransfer.getData('text/plain'));
+  assignAfterToRow(rowIdx, imgId, source);
+  const slotId = source === 'update-after' ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
+  document.getElementById(slotId)?.classList.remove('drag-over');
+  if (draggedThumb) draggedThumb.classList.remove('dragging');
+}
+
+function slotClick(rowIdx, source) {
+  // Mobile fallback: create file input
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    const img = await readFile(e.target.files[0]);
+    if (source === 'update-after') {
+      state.updateAfterImages.push(img);
+    } else {
+      state.afterImages.push(img);
+    }
+    assignAfterToRow(rowIdx, img.id, source);
+  };
+  inp.click();
+}
+
+function assignAfterToRow(rowIdx, imgId, source) {
+  state.rows[rowIdx].afterId = imgId;
+
+  const pool = source === 'update-after' ? state.updateAfterImages : state.afterImages;
+  const img = pool.find(x => x.id == imgId);
+  if (!img) return;
+
+  const slotId = source === 'update-after' ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
+  const slot = document.getElementById(slotId);
+  if (slot) {
+    slot.innerHTML = `<img style="width:100%;height:100%;object-fit:cover;border-radius:4px" src="${img.dataURL}">`;
+    slot.classList.remove('drag-over');
+  }
+
+  // Mark pool thumb as used
+  document.querySelectorAll(`.pool-thumb[data-img-id="${imgId}"]`).forEach(t => t.classList.add('used'));
+}
+
+// ═══════════════════════════════════════════════
+//  REPORT GENERATION
+// ═══════════════════════════════════════════════
+function generateReport(isUpdate) {
+  saveFindings();
+
+  const output = document.getElementById('report-output');
+  output.innerHTML = buildReportHTML();
+
+  document.getElementById('pdf-preview-container').classList.add('open');
+}
+
+function buildReportHTML() {
+  const building = state.building;
+  const type = state.inspectionType;
+  const rawDate = state.reportDate;
+  const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
+
+  const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
+
+  // Page 1 — Cover
+  let html = `
+  <div class="report-page" id="report-page-1">
+    <div class="report-page-header">
+      <span>Emirates Properties LLC</span>
+      <span>${building} &nbsp;&bull;&nbsp; ${type}</span>
+    </div>
+
+    <div class="report-main-title">MAINTENANCE<br>INSPECTION<br>REPORT</div>
+
+    <div class="report-info-box">
+      <div class="report-info-row"><span class="report-info-label"><strong>Building name</strong></span><span>:&nbsp; ${building}</span></div>
+      <div class="report-info-row"><span class="report-info-label"><strong>Inspection type</strong></span><span>:&nbsp; ${type}</span></div>
+      <div class="report-info-row"><span class="report-info-label"><strong>Report date</strong></span><span>:&nbsp; ${dateFormatted}</span></div>
+    </div>
+
+    <div class="report-page-footer">
+      <span>${building}</span>
+      <span>${type}</span>
+      <span>Page <strong>1</strong> of ${Math.ceil(state.rows.length / 5) + 1}</span>
+    </div>
+  </div>
+  `;
+
+  // Page 2+ — Findings (5 rows per page)
+  const ROWS_PER_PAGE = 5;
+  const chunks = [];
+  for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
+    chunks.push(state.rows.slice(i, i + ROWS_PER_PAGE).map((r, j) => ({ ...r, globalIdx: i + j })));
+  }
+
+  chunks.forEach((chunk, pageIdx) => {
+    html += `
+    <div class="report-page" id="report-page-${pageIdx+2}">
+      <div class="report-page-header">
+        <span>Emirates Properties LLC</span>
+        <span>${building} &nbsp;&bull;&nbsp; ${type}</span>
+      </div>
+
+      <div class="report-findings-title">Inspection findings:</div>
+
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Findings</th>
+            <th style="width:22%">Before Picture</th>
+            <th style="width:22%">After Picture</th>
+            <th style="width:28%">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    chunk.forEach(row => {
+      const bImg = state.beforeImages.find(x => x.id === row.beforeId);
+      const aImg = afterPool.find(x => x.id === row.afterId);
+
+      html += `
+        <tr>
+          <td style="text-align:left;font-size:12px">${row.finding || ''}</td>
+          <td>${bImg ? `<img class="report-img" src="${bImg.dataURL}">` : ''}</td>
+          <td>${aImg ? `<img class="report-img" src="${aImg.dataURL}">` : ''}</td>
+          <td style="text-align:left;font-size:11.5px">${row.remarks || ''}</td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+
+      <div class="report-page-footer">
+        <span>${building}</span>
+        <span>${type}</span>
+        <span>Page <strong>${pageIdx+2}</strong> of ${chunks.length + 1}</span>
+      </div>
+    </div>
+    `;
+  });
+
+  return html;
+}
+
+function closePreview() {
+  document.getElementById('pdf-preview-container').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+//  PDF DOWNLOAD
+// ═══════════════════════════════════════════════
+async function downloadPDF() {
+  const label = document.getElementById('dl-label');
+  const loader = document.getElementById('dl-loader');
+  label.style.display = 'none';
+  loader.style.display = 'inline';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+    const pages = document.querySelectorAll('.report-page');
+    for (let i = 0; i < pages.length; i++) {
+      const canvas = await html2canvas(pages[i], {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.9);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    }
+
+    const fileName = `Inspection_Report_${state.building.replace(/\s+/g,'_')}_${state.reportDate}.pdf`;
+    pdf.save(fileName);
+  } catch(err) {
+    alert('PDF generation failed: ' + err.message);
+    console.error(err);
+  }
+
+  label.style.display = 'inline';
+  loader.style.display = 'none';
+}
+</script>
+</body>
+</html>
