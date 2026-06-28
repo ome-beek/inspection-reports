@@ -692,17 +692,18 @@
     position: relative;
   }
 
-  /* ── Page header — thin top line ── */
+  /* ── Page header — company name top-left, thin line below ── */
   .report-page-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     border-bottom: 1px solid #000;
     padding-bottom: 5px;
-    margin-bottom: 0;
+    margin-bottom: 6px;
     font-size: 9.5px;
     color: #333;
     flex-shrink: 0;
+    font-family: Arial, sans-serif;
   }
 
   /* ── Cover page title ── */
@@ -716,26 +717,27 @@
 
   .report-main-title {
     text-align: center;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 900;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    line-height: 1.15;
-    margin-bottom: 0;
+    line-height: 1.2;
     font-family: Arial Black, Arial, sans-serif;
+    text-decoration: underline;
   }
 
   .report-info-box {
     border: 2px solid #000;
-    padding: 14px 22px;
-    margin-top: 60px;
-    width: 380px;
+    padding: 10px 18px;
+    margin-top: 80px;
+    width: 420px;
+    font-family: Arial, sans-serif;
   }
 
   .report-info-row {
     display: flex;
-    gap: 10px;
-    padding: 6px 0;
+    align-items: center;
+    padding: 8px 0;
     font-size: 13px;
     border-bottom: 1px solid #ddd;
   }
@@ -743,19 +745,22 @@
 
   .report-info-label {
     font-weight: 700;
-    min-width: 140px;
+    min-width: 160px;
+    display: inline-block;
   }
 
-  /* ── Page footer ── */
+  /* ── Page footer — exact match: left=building, center=type, right=page X of N ── */
   .report-page-footer {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-top: 1px solid #888;
-    padding-top: 6px;
+    padding-top: 5px;
     margin-top: auto;
-    font-size: 9.5px;
+    font-size: 9px;
     color: #444;
     flex-shrink: 0;
+    font-family: Arial, sans-serif;
   }
 
   /* ── Findings pages ── */
@@ -781,12 +786,12 @@
   }
 
   .report-table th {
-    background: #000;
-    color: white;
-    padding: 7px 8px;
+    background: #ffffff;
+    color: #000000;
+    padding: 6px 8px;
     text-align: center;
     font-weight: 700;
-    font-size: 10px;
+    font-size: 10.5px;
     border: 1px solid #000;
   }
 
@@ -816,14 +821,56 @@
   }
 
   .report-img {
-    max-width: 148px;
-    max-height: 140px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
-    margin: auto;
   }
+
+  .td-img-cell {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  /* ── STEP 4 per-row after-photo slots ── */
+  .s4-slot {
+    width: 90px;
+    height: 70px;
+    border: 2px dashed var(--border-strong);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-size: 11px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+  .s4-slot-filled {
+    border: 2px solid var(--border-strong);
+    cursor: grab;
+  }
+  .s4-slot-filled:active { cursor: grabbing; }
+  .s4-slot.drag-over {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(27,79,138,0.18);
+    background: var(--accent-pale);
+  }
+  .s4-slot-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(27,79,138,0.72);
+    color: white;
+    font-size: 9px;
+    text-align: center;
+    padding: 2px 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .s4-slot-filled:hover .s4-slot-overlay { opacity: 1; }
 
   /* ── LOADING ── */
   .loader {
@@ -968,7 +1015,34 @@
         <div class="form-row full">
           <div class="form-group">
             <label>Building Name *</label>
-            <input type="text" class="form-control" id="inp-building" placeholder="e.g. Al Falasi Building 2">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <div style="flex:1;position:relative">
+                <input type="text" class="form-control" id="inp-building"
+                       placeholder="Type to search building name…"
+                       autocomplete="off"
+                       oninput="buildingSuggest(this.value)"
+                       onkeydown="buildingKeydown(event)"
+                       onfocus="buildingSuggest(this.value)">
+                <ul id="building-suggestions" style="
+                  display:none;position:absolute;top:100%;left:0;right:0;
+                  background:#fff;border:1.5px solid var(--accent);border-top:none;
+                  border-radius:0 0 8px 8px;margin:0;padding:0;list-style:none;
+                  max-height:200px;overflow-y:auto;z-index:999;
+                  box-shadow:0 4px 16px rgba(27,79,138,0.13)"></ul>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                <button type="button" class="btn btn-secondary btn-sm"
+                        title="Import building list from .txt file (one name per line)"
+                        onclick="document.getElementById('building-names-file').click()"
+                        style="padding:10px 14px;font-size:18px;line-height:1;white-space:nowrap">📂</button>
+                <span style="font-size:10px;color:var(--ink-soft);text-align:center;line-height:1.2">Import<br>.txt</span>
+              </div>
+              <input type="file" id="building-names-file" accept=".txt" style="display:none" onchange="importBuildingNames(event)">
+            </div>
+            <div id="building-import-notice" style="display:none;margin-top:6px;padding:6px 10px;background:var(--success-light);border:1px solid #b0dfc0;border-radius:6px;font-size:12px;color:var(--success)"></div>
+            <div style="margin-top:5px;font-size:12px;color:var(--ink-soft)">
+              Type any part of the name to search · Click 📂 to import a .txt file (one building per line)
+            </div>
           </div>
         </div>
 
@@ -1102,33 +1176,43 @@
         <div class="step active"><div class="step-num">4</div><span>After Photos</span></div>
       </div>
 
+      <!-- Bulk upload zone -->
       <div class="card">
-        <div class="card-title">📸 After Condition Photos (Optional)</div>
-        <div class="notice notice-info">ℹ️ Upload all after-condition photos. Then drag each thumbnail into the correct row's "After Picture" slot in the table below.</div>
+        <div class="card-title">📸 After Condition Photos <span style="font-size:12px;font-weight:400;color:var(--ink-soft)">(Optional)</span></div>
 
-        <div class="upload-zone" id="after-dropzone" onclick="document.getElementById('after-files').click()" ondragover="handleDragOver(event,'after-dropzone')" ondragleave="handleDragLeave('after-dropzone')" ondrop="handleDrop(event,'after')">
+        <div class="notice notice-info" style="margin-bottom:14px">
+          ℹ️ <strong>Bulk upload:</strong> Select all after photos at once — they auto-fill rows in order.
+          Use the <strong>📷 / 📁</strong> button on each row to replace individual photos, or <strong>drag photos between rows</strong> to reorder.
+        </div>
+
+        <div class="upload-zone" id="after-dropzone"
+             onclick="document.getElementById('after-files').click()"
+             ondragover="handleDragOver(event,'after-dropzone')"
+             ondragleave="handleDragLeave('after-dropzone')"
+             ondrop="handleDrop(event,'after')">
           <div class="upload-icon">📁</div>
-          <p><strong>Click to select after photos</strong> or drag & drop</p>
-          <p style="margin-top:4px;font-size:12px">Select multiple files at once · JPG, PNG, WEBP</p>
+          <p><strong>Click to select all after photos</strong> or drag & drop here</p>
+          <p style="margin-top:4px;font-size:12px">Select multiple files · JPG, PNG, WEBP · they auto-fill rows in order</p>
         </div>
         <input type="file" id="after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFiles(event)">
-
-        <div id="after-pool-wrapper" style="display:none;margin-top:16px">
-          <p style="font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">DRAG PHOTOS INTO TABLE ROWS BELOW ↓</p>
-          <div class="image-pool" id="after-pool"></div>
-        </div>
       </div>
 
+      <!-- Per-row table -->
       <div class="card" style="overflow-x:auto">
-        <div class="card-title">📋 Drop After Photos into Rows</div>
+        <div class="card-title">📋 After Photos per Row</div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px">
+          Each row shows the before photo and its after slot. 
+          Drag an after photo from one slot to another to reorder.
+          Click <strong>📷</strong> to take a photo (mobile) or <strong>📁</strong> to pick a file for that row.
+        </p>
         <table class="findings-table" id="findings-table-step4">
           <thead>
             <tr>
-              <th style="width:34px">#</th>
+              <th style="width:32px">#</th>
               <th>Findings</th>
               <th class="td-before-img">Before Picture</th>
-              <th class="td-after-img">After Picture (Drop Here)</th>
-              <th>Remarks</th>
+              <th class="td-after-img">After Picture</th>
+              <th style="width:90px">Actions</th>
             </tr>
           </thead>
           <tbody id="findings-tbody-step4"></tbody>
@@ -1203,6 +1287,10 @@
       <button class="btn btn-success" onclick="downloadPDF()">
         <span id="dl-label">⬇️ Download PDF</span>
         <span id="dl-loader" style="display:none"><span class="loader"></span></span>
+      </button>
+      <button class="btn btn-primary" onclick="downloadWord()">
+        <span id="dl-word-label">⬇️ Download Word</span>
+        <span id="dl-word-loader" style="display:none"><span class="loader"></span></span>
       </button>
       <button class="btn btn-secondary" onclick="closePreview()">Close</button>
     </div>
@@ -1282,8 +1370,7 @@ let state = {
   updateAfterImages: []
 };
 
-let draggedThumb = null;
-let dragSource = null; // 'after' | 'update-after'
+
 
 // ═══════════════════════════════════════════════
 //  FIREBASE INIT & AUTH
@@ -1366,6 +1453,7 @@ function initApp() {
   const today = new Date().toISOString().split('T')[0];
   const d = document.getElementById('inp-date');
   if (d) d.value = today;
+  loadBuildingNames();
   showView('view-home');
 }
 
@@ -1415,7 +1503,7 @@ function goToStep2() {
   const type = typeEl.value === '__custom__' ? typeCustom : typeEl.value;
   const date = document.getElementById('inp-date').value;
 
-  if (!building) { alert('Please enter the building name.'); return; }
+  if (!building) { alert('Please enter or select a building name.'); return; }
   if (!type) { alert('Please select or enter the inspection type.'); return; }
   if (!date) { alert('Please select a report date.'); return; }
 
@@ -1423,6 +1511,111 @@ function goToStep2() {
   state.inspectionType = type;
   state.reportDate = date;
   showView('view-step2');
+}
+
+// ── Building name typeahead ──
+let buildingNames = [];
+let buildingSuggestionIndex = -1;
+
+function loadBuildingNames() {
+  try { buildingNames = JSON.parse(localStorage.getItem('buildingNames') || '[]'); } catch(e) { buildingNames = []; }
+}
+
+function saveBuildingNames() {
+  try { localStorage.setItem('buildingNames', JSON.stringify(buildingNames)); } catch(e) {}
+}
+
+function buildingSuggest(query) {
+  const ul = document.getElementById('building-suggestions');
+  query = query.trim();
+  const matches = query.length === 0
+    ? buildingNames
+    : buildingNames.filter(n => n.toLowerCase().includes(query.toLowerCase()));
+
+  if (matches.length === 0) { ul.style.display = 'none'; return; }
+
+  buildingSuggestionIndex = -1;
+  ul.innerHTML = '';
+  matches.forEach((name, i) => {
+    const li = document.createElement('li');
+    // Highlight matched portion
+    const idx = name.toLowerCase().indexOf(query.toLowerCase());
+    li.innerHTML = idx >= 0 && query
+      ? name.slice(0, idx) + '<strong>' + name.slice(idx, idx + query.length) + '</strong>' + name.slice(idx + query.length)
+      : name;
+    li.style.cssText = 'padding:9px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid #f0f0f0;list-style:none';
+    li.onmouseenter = () => { highlightSuggestion(i); };
+    li.onmouseleave = () => { li.style.background = ''; };
+    li.onmousedown = (e) => { e.preventDefault(); selectBuilding(name); };
+    ul.appendChild(li);
+  });
+  ul.style.display = 'block';
+}
+
+function highlightSuggestion(i) {
+  const items = document.getElementById('building-suggestions').querySelectorAll('li');
+  items.forEach((li, j) => { li.style.background = j === i ? 'var(--accent-light)' : ''; });
+  buildingSuggestionIndex = i;
+}
+
+function buildingKeydown(e) {
+  const ul = document.getElementById('building-suggestions');
+  const items = ul.querySelectorAll('li');
+  if (ul.style.display === 'none' || items.length === 0) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    buildingSuggestionIndex = Math.min(buildingSuggestionIndex + 1, items.length - 1);
+    highlightSuggestion(buildingSuggestionIndex);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    buildingSuggestionIndex = Math.max(buildingSuggestionIndex - 1, 0);
+    highlightSuggestion(buildingSuggestionIndex);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (buildingSuggestionIndex >= 0 && items[buildingSuggestionIndex]) {
+      const name = buildingNames.filter(n => {
+        const q = document.getElementById('inp-building').value.trim();
+        return q.length === 0 ? true : n.toLowerCase().includes(q.toLowerCase());
+      })[buildingSuggestionIndex];
+      if (name) selectBuilding(name);
+    }
+  } else if (e.key === 'Escape') {
+    ul.style.display = 'none';
+  }
+}
+
+function selectBuilding(name) {
+  document.getElementById('inp-building').value = name;
+  document.getElementById('building-suggestions').style.display = 'none';
+  buildingSuggestionIndex = -1;
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest || (!e.target.closest('#inp-building') && !e.target.closest('#building-suggestions'))) {
+    const ul = document.getElementById('building-suggestions');
+    if (ul) ul.style.display = 'none';
+  }
+});
+
+function importBuildingNames(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let added = 0;
+    lines.forEach(n => { if (!buildingNames.includes(n)) { buildingNames.push(n); added++; } });
+    saveBuildingNames();
+    const notice = document.getElementById('building-import-notice');
+    notice.textContent = `✓ Imported ${lines.length} building name(s) (${added} new). Start typing to search.`;
+    notice.style.display = 'block';
+    setTimeout(() => { notice.style.display = 'none'; }, 4000);
+    document.getElementById('inp-building').focus();
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 function goToStep3() {
@@ -1466,12 +1659,26 @@ async function handleBeforeFiles(event) {
 
 async function handleAfterFiles(event) {
   const files = Array.from(event.target.files);
+  // Read all files
+  const newImgs = [];
   for (const f of files) {
-    const img = await readFile(f);
-    state.afterImages.push(img);
+    newImgs.push(await readFile(f));
   }
-  renderAfterPool();
-  document.getElementById('after-pool-wrapper').style.display = 'block';
+  // Auto-assign sequentially starting from first unassigned row
+  let rowCursor = 0;
+  for (const img of newImgs) {
+    // Find next row without an after image
+    while (rowCursor < state.rows.length && state.rows[rowCursor].afterId !== null) rowCursor++;
+    if (rowCursor < state.rows.length) {
+      state.afterImages.push(img);
+      state.rows[rowCursor].afterId = img.id;
+      rowCursor++;
+    } else {
+      // All rows filled — still store the image
+      state.afterImages.push(img);
+    }
+  }
+  buildStep4Table();
   event.target.value = '';
 }
 
@@ -1510,9 +1717,20 @@ async function handleDrop(e, type) {
     document.getElementById('before-count-notice').style.display = 'block';
     document.getElementById('before-count-badge').textContent = state.beforeImages.length + ' photo(s) ready';
   } else if (type === 'after') {
-    for (const f of files) { state.afterImages.push(await readFile(f)); }
-    renderAfterPool();
-    document.getElementById('after-pool-wrapper').style.display = 'block';
+    const newImgs = [];
+    for (const f of files) { newImgs.push(await readFile(f)); }
+    let rowCursor = 0;
+    for (const img of newImgs) {
+      while (rowCursor < state.rows.length && state.rows[rowCursor].afterId !== null) rowCursor++;
+      if (rowCursor < state.rows.length) {
+        state.afterImages.push(img);
+        state.rows[rowCursor].afterId = img.id;
+        rowCursor++;
+      } else {
+        state.afterImages.push(img);
+      }
+    }
+    buildStep4Table();
   } else if (type === 'update-after') {
     for (const f of files) { state.updateAfterImages.push(await readFile(f)); }
     renderUpdateAfterPool();
@@ -1656,8 +1874,10 @@ function saveFindings() {
 }
 
 // ═══════════════════════════════════════════════
-//  STEP 4 TABLE (drag-drop after photos)
+//  STEP 4 TABLE — per-row with drag-between-slots, camera, file
 // ═══════════════════════════════════════════════
+let s4DragFromRow = null; // row index being dragged FROM
+
 function buildStep4Table() {
   const tbody = document.getElementById('findings-tbody-step4');
   tbody.innerHTML = '';
@@ -1669,25 +1889,131 @@ function buildStep4Table() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><span class="row-num">${i+1}</span></td>
-      <td style="font-size:12.5px;max-width:160px">${row.finding || '<em style="color:#aaa">Not set</em>'}</td>
+      <td style="font-size:12px;max-width:150px;vertical-align:middle">${row.finding || '<em style="color:#aaa">—</em>'}</td>
       <td class="td-before-img">
         ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
       </td>
-      <td class="td-after-img">
-        <div class="drop-slot" id="slot-${i}"
-             ondragover="slotDragOver(event,${i})"
-             ondragleave="slotDragLeave(${i})"
-             ondrop="slotDrop(event,${i},'after')"
-             onclick="slotClick(${i},'after')">
+      <td class="td-after-img" style="padding:4px">
+        <div class="s4-slot ${aImg ? 's4-slot-filled' : ''}"
+             id="s4slot-${i}"
+             draggable="${aImg ? 'true' : 'false'}"
+             ondragstart="s4DragStart(event,${i})"
+             ondragover="s4DragOver(event,${i})"
+             ondragleave="s4DragLeave(event,${i})"
+             ondrop="s4Drop(event,${i})">
           ${aImg
-            ? `<img class="img-cell" src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`
-            : `<span>📷</span><span style="font-size:10px">Drop here</span>`}
+            ? `<img src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block">
+               <div class="s4-slot-overlay">↕ Drag to swap</div>`
+            : `<span style="font-size:22px">📷</span>
+               <span style="font-size:10px;margin-top:2px">No photo yet</span>`}
         </div>
       </td>
-      <td style="font-size:12.5px;max-width:180px">${row.remarks || '—'}</td>
+      <td style="vertical-align:middle;text-align:center;padding:6px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+          <button class="btn btn-secondary btn-sm" title="Take photo (mobile) or pick file"
+                  onclick="s4CameraOrFile(${i})" style="width:70px;font-size:12px;padding:6px 0">
+            📷 Photo
+          </button>
+          <button class="btn btn-secondary btn-sm" title="Pick file from device"
+                  onclick="s4PickFile(${i})" style="width:70px;font-size:12px;padding:6px 0">
+            📁 File
+          </button>
+          ${aImg ? `<button class="btn btn-sm" title="Remove photo"
+                  onclick="s4Remove(${i})" style="width:70px;font-size:11px;padding:5px 0;background:#fdecea;color:#c0392b;border:1px solid #f5c6c2">
+            ✕ Clear
+          </button>` : ''}
+        </div>
+      </td>
     `;
     tbody.appendChild(tr);
   });
+}
+
+// ── Per-slot drag (swap between rows) ──
+function s4DragStart(e, fromRow) {
+  s4DragFromRow = fromRow;
+  e.dataTransfer.setData('text/plain', String(fromRow));
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => {
+    const el = document.getElementById(`s4slot-${fromRow}`);
+    if (el) el.style.opacity = '0.4';
+  }, 0);
+}
+
+function s4DragOver(e, toRow) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const el = document.getElementById(`s4slot-${toRow}`);
+  if (el && s4DragFromRow !== toRow) el.classList.add('drag-over');
+}
+
+function s4DragLeave(e, toRow) {
+  const el = document.getElementById(`s4slot-${toRow}`);
+  if (el) el.classList.remove('drag-over');
+}
+
+function s4Drop(e, toRow) {
+  e.preventDefault();
+  const fromRow = parseInt(e.dataTransfer.getData('text/plain'));
+  const fromSlot = document.getElementById(`s4slot-${fromRow}`);
+  const toSlot   = document.getElementById(`s4slot-${toRow}`);
+  if (fromSlot) fromSlot.style.opacity = '';
+  if (toSlot) toSlot.classList.remove('drag-over');
+  if (fromRow === toRow) return;
+
+  // Swap afterId between rows
+  const tmp = state.rows[fromRow].afterId;
+  state.rows[fromRow].afterId = state.rows[toRow].afterId;
+  state.rows[toRow].afterId = tmp;
+  s4DragFromRow = null;
+  buildStep4Table();
+}
+
+// ── Per-row camera (capture=environment triggers camera on mobile) ──
+function s4CameraOrFile(rowIdx) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.capture = 'environment'; // opens camera on mobile
+  inp.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    await s4AssignFile(rowIdx, e.target.files[0]);
+  };
+  inp.click();
+}
+
+// ── Per-row file picker (no camera) ──
+function s4PickFile(rowIdx) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    await s4AssignFile(rowIdx, e.target.files[0]);
+  };
+  inp.click();
+}
+
+async function s4AssignFile(rowIdx, file) {
+  const img = await readFile(file);
+  // Replace existing afterId in pool if present
+  if (state.rows[rowIdx].afterId !== null) {
+    const oldIdx = state.afterImages.findIndex(x => x.id === state.rows[rowIdx].afterId);
+    if (oldIdx >= 0) state.afterImages.splice(oldIdx, 1);
+  }
+  state.afterImages.push(img);
+  state.rows[rowIdx].afterId = img.id;
+  buildStep4Table();
+}
+
+function s4Remove(rowIdx) {
+  const oldId = state.rows[rowIdx].afterId;
+  if (oldId !== null) {
+    const oldIdx = state.afterImages.findIndex(x => x.id === oldId);
+    if (oldIdx >= 0) state.afterImages.splice(oldIdx, 1);
+  }
+  state.rows[rowIdx].afterId = null;
+  buildStep4Table();
 }
 
 // ═══════════════════════════════════════════════
@@ -1739,72 +2065,6 @@ function buildUpdateTable() {
 }
 
 // ═══════════════════════════════════════════════
-//  DRAG & DROP — AFTER PHOTOS INTO SLOTS
-// ═══════════════════════════════════════════════
-function onThumbDragStart(e) {
-  draggedThumb = e.target;
-  dragSource = e.target.dataset.source;
-  e.dataTransfer.setData('text/plain', e.target.dataset.imgId);
-  setTimeout(() => e.target.classList.add('dragging'), 0);
-}
-
-function slotDragOver(e, rowIdx) {
-  e.preventDefault();
-  const slotId = state.isUpdateMode ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
-  document.getElementById(slotId).classList.add('drag-over');
-}
-
-function slotDragLeave(rowIdx) {
-  const slotId = state.isUpdateMode ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
-  const el = document.getElementById(slotId);
-  if (el) el.classList.remove('drag-over');
-}
-
-function slotDrop(e, rowIdx, source) {
-  e.preventDefault();
-  const imgId = parseFloat(e.dataTransfer.getData('text/plain'));
-  assignAfterToRow(rowIdx, imgId, source);
-  const slotId = source === 'update-after' ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
-  document.getElementById(slotId)?.classList.remove('drag-over');
-  if (draggedThumb) draggedThumb.classList.remove('dragging');
-}
-
-function slotClick(rowIdx, source) {
-  // Mobile fallback: create file input
-  const inp = document.createElement('input');
-  inp.type = 'file'; inp.accept = 'image/*';
-  inp.onchange = async (e) => {
-    if (!e.target.files[0]) return;
-    const img = await readFile(e.target.files[0]);
-    if (source === 'update-after') {
-      state.updateAfterImages.push(img);
-    } else {
-      state.afterImages.push(img);
-    }
-    assignAfterToRow(rowIdx, img.id, source);
-  };
-  inp.click();
-}
-
-function assignAfterToRow(rowIdx, imgId, source) {
-  state.rows[rowIdx].afterId = imgId;
-
-  const pool = source === 'update-after' ? state.updateAfterImages : state.afterImages;
-  const img = pool.find(x => x.id == imgId);
-  if (!img) return;
-
-  const slotId = source === 'update-after' ? `update-slot-${rowIdx}` : `slot-${rowIdx}`;
-  const slot = document.getElementById(slotId);
-  if (slot) {
-    slot.innerHTML = `<img style="width:100%;height:100%;object-fit:cover;border-radius:4px" src="${img.dataURL}">`;
-    slot.classList.remove('drag-over');
-  }
-
-  // Mark pool thumb as used
-  document.querySelectorAll(`.pool-thumb[data-img-id="${imgId}"]`).forEach(t => t.classList.add('used'));
-}
-
-// ═══════════════════════════════════════════════
 //  REPORT GENERATION
 // ═══════════════════════════════════════════════
 function generateReport(isUpdate) {
@@ -1822,6 +2082,9 @@ function buildReportHTML() {
   const rawDate = state.reportDate;
   const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
+  // Cover title = inspection type in upper case e.g. "MAINTENANCE INSPECTION REPORT"
+  const coverTitle = (type.toUpperCase() + '\nREPORT').replace(/\n/, '<br>');
+
   const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
 
   // Total pages
@@ -1832,29 +2095,28 @@ function buildReportHTML() {
   }
   const totalPages = 1 + findingChunks.length;
 
-  // ── PAGE 1: Cover ──
+  // ── PAGE 1: Cover — exact replica of reference PDF ──
   let html = `
   <div class="report-page" id="report-page-1">
     <div class="report-page-header">
       <span>Emirates Properties LLC</span>
-      <span>${building} &nbsp;&nbsp; ${type} &nbsp;&nbsp; Page <strong>1</strong> of ${totalPages}</span>
     </div>
 
     <div class="report-cover-body">
-      <div class="report-main-title">MAINTENANCE<br>INSPECTION<br>REPORT</div>
+      <div class="report-main-title">${coverTitle}</div>
 
       <div class="report-info-box">
         <div class="report-info-row">
-          <span class="report-info-label"><strong>Building name</strong></span>
-          <span>: &nbsp;${building}</span>
+          <span class="report-info-label"><strong>Building name</strong>&nbsp;&nbsp;:</span>
+          <span>&nbsp;&nbsp;${building}</span>
         </div>
         <div class="report-info-row">
-          <span class="report-info-label"><strong>Inspection type</strong></span>
-          <span>: &nbsp;${type}</span>
+          <span class="report-info-label"><strong>Inspection type :</strong></span>
+          <span>&nbsp;&nbsp;${type}</span>
         </div>
-        <div class="report-info-row">
-          <span class="report-info-label"><strong>Report date</strong></span>
-          <span>: &nbsp;${dateFormatted}</span>
+        <div class="report-info-row" style="border-bottom:none">
+          <span class="report-info-label"><strong>Report date</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>
+          <span>&nbsp;&nbsp;${dateFormatted}</span>
         </div>
       </div>
     </div>
@@ -1878,7 +2140,6 @@ function buildReportHTML() {
     <div class="report-page" id="report-page-${pageIdx + 2}">
       <div class="report-page-header">
         <span>Emirates Properties LLC</span>
-        <span>${building} &nbsp;&nbsp; ${type} &nbsp;&nbsp; Page <strong>${pageIdx + 2}</strong> of ${totalPages}</span>
       </div>
 
       <div class="report-findings-title">Inspection findings:</div>
@@ -1886,10 +2147,10 @@ function buildReportHTML() {
       <div class="report-table-wrap">
         <table class="report-table">
           <colgroup>
-            <col style="width:25%">
-            <col style="width:25%">
-            <col style="width:25%">
-            <col style="width:25%">
+            <col style="width:22%">
+            <col style="width:26%">
+            <col style="width:26%">
+            <col style="width:26%">
           </colgroup>
           <thead>
             <tr>
@@ -1909,8 +2170,8 @@ function buildReportHTML() {
       html += `
         <tr>
           <td class="td-finding">${row.finding || ''}</td>
-          <td>${bImg ? `<img class="report-img" src="${bImg.dataURL}" crossorigin="anonymous">` : ''}</td>
-          <td>${aImg ? `<img class="report-img" src="${aImg.dataURL}" crossorigin="anonymous">` : ''}</td>
+          <td class="td-img-cell">${bImg ? `<img class="report-img" src="${bImg.dataURL}" crossorigin="anonymous">` : ''}</td>
+          <td class="td-img-cell">${aImg ? `<img class="report-img" src="${aImg.dataURL}" crossorigin="anonymous">` : ''}</td>
           <td class="td-remarks">${row.remarks || ''}</td>
         </tr>
       `;
@@ -1986,11 +2247,128 @@ async function downloadPDF() {
     }
 
     const safeBuilding = state.building.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
-    const fileName = `Inspection_Report_${safeBuilding}_${state.reportDate || 'draft'}.pdf`;
+    const safeType = state.inspectionType.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
+    const fileName = `${safeType}_${safeBuilding}_${state.reportDate || 'draft'}.pdf`;
     pdf.save(fileName);
 
   } catch(err) {
     alert('PDF generation failed: ' + err.message);
+    console.error(err);
+  }
+
+  label.style.display = 'inline';
+  loader.style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+//  WORD DOWNLOAD
+// ═══════════════════════════════════════════════
+async function downloadWord() {
+  const label = document.getElementById('dl-word-label');
+  const loader = document.getElementById('dl-word-loader');
+  label.style.display = 'none';
+  loader.style.display = 'inline';
+
+  try {
+    const building = state.building;
+    const type = state.inspectionType;
+    const rawDate = state.reportDate;
+    const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
+    const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
+    const ROWS_PER_PAGE = 5;
+    const coverTitle = type.toUpperCase() + ' REPORT';
+
+    // Build an HTML document that Word can open
+    // We embed images as base64 data URIs
+    const pages = document.querySelectorAll('.report-page');
+    let bodyHtml = '';
+
+    // Cover page
+    bodyHtml += `
+      <div style="font-family:Arial,sans-serif;page-break-after:always;padding:28px 36px;min-height:1000px;position:relative">
+        <p style="font-size:9pt;border-bottom:1pt solid black;padding-bottom:4pt;margin-bottom:12pt">Emirates Properties LLC</p>
+        <div style="text-align:center;margin-top:120pt">
+          <h1 style="font-size:28pt;font-weight:900;letter-spacing:2pt;text-transform:uppercase;line-height:1.3">${coverTitle.replace(' REPORT','<br>REPORT')}</h1>
+        </div>
+        <table style="border:2pt solid black;margin:60pt auto 0;width:400pt;border-collapse:collapse">
+          <tr><td style="padding:8pt 12pt;font-size:11pt;border-bottom:1pt solid #ddd"><b>Building name &nbsp;&nbsp;:</b>&nbsp;&nbsp;${building}</td></tr>
+          <tr><td style="padding:8pt 12pt;font-size:11pt;border-bottom:1pt solid #ddd"><b>Inspection type :</b>&nbsp;&nbsp;${type}</td></tr>
+          <tr><td style="padding:8pt 12pt;font-size:11pt"><b>Report date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;${dateFormatted}</td></tr>
+        </table>
+        <p style="font-size:8pt;border-top:1pt solid #888;padding-top:4pt;margin-top:40pt;display:flex;justify-content:space-between">
+          <span>${building}</span><span>${type}</span><span>Page <b>1</b></span>
+        </p>
+      </div>
+    `;
+
+    // Findings pages
+    const chunks = [];
+    for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
+      chunks.push(state.rows.slice(i, i + ROWS_PER_PAGE));
+    }
+    const totalPages = 1 + chunks.length;
+
+    chunks.forEach((chunk, pi) => {
+      while (chunk.length < ROWS_PER_PAGE) chunk.push({ finding:'', beforeId:null, afterId:null, remarks:'' });
+      let rows = '';
+      chunk.forEach(row => {
+        const bImg = state.beforeImages.find(x => x.id === row.beforeId);
+        const aImg = afterPool.find(x => x.id === row.afterId);
+        rows += `<tr>
+          <td style="border:1pt solid #bbb;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:22%;word-wrap:break-word">${row.finding||''}</td>
+          <td style="border:1pt solid #bbb;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
+            ${bImg ? `<img src="${bImg.dataURL}" style="width:100%;height:110pt;object-fit:cover;display:block">` : ''}
+          </td>
+          <td style="border:1pt solid #bbb;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
+            ${aImg ? `<img src="${aImg.dataURL}" style="width:100%;height:110pt;object-fit:cover;display:block">` : ''}
+          </td>
+          <td style="border:1pt solid #bbb;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:26%;word-wrap:break-word">${row.remarks||''}</td>
+        </tr>`;
+      });
+
+      bodyHtml += `
+        <div style="font-family:Arial,sans-serif;${pi < chunks.length-1 ? 'page-break-after:always;':''}padding:28px 36px">
+          <p style="font-size:9pt;border-bottom:1pt solid black;padding-bottom:4pt;margin-bottom:8pt">Emirates Properties LLC</p>
+          <p style="font-size:10pt;font-weight:bold;margin-bottom:6pt">Inspection findings:</p>
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+            <tr>
+              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:22%">Findings</th>
+              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">Before Picture</th>
+              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">After Picture</th>
+              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">Remarks</th>
+            </tr>
+            ${rows}
+          </table>
+          <p style="font-size:8pt;border-top:1pt solid #888;padding-top:4pt;margin-top:8pt">
+            <span style="float:left">${building}</span>
+            <span style="margin:0 auto;display:block;text-align:center">${type}</span>
+            <span style="float:right">Page <b>${pi+2}</b> of ${totalPages}</span>
+          </p>
+        </div>
+      `;
+    });
+
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <style>
+        @page { margin: 0; }
+        body { margin: 0; }
+      </style>
+    </head><body>${bodyHtml}</body></html>`;
+
+    const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safeBuilding = building.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
+    const safeType = type.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
+    a.href = url;
+    a.download = `${safeType}_${safeBuilding}_${rawDate || 'draft'}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+  } catch(err) {
+    alert('Word generation failed: ' + err.message);
     console.error(err);
   }
 
