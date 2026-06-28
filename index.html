@@ -670,101 +670,159 @@
   }
 
   /* ── REPORT PREVIEW ── */
+  /* A4 = 210mm × 297mm. At 96dpi screen: 794px × 1123px */
   #report-output {
-    font-family: Arial, sans-serif;
-    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
     color: #000;
   }
 
+  /* Each report-page is an exact A4 page */
   .report-page {
     background: white;
-    width: 100%;
-    padding: 24px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 16px;
+    width: 794px;          /* 210mm at 96dpi */
+    height: 1123px;        /* 297mm at 96dpi */
+    padding: 28px 36px 24px 36px;
+    border: 1px solid #ccc;
+    margin: 0 auto 20px auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
   }
 
+  /* ── Page header — thin top line ── */
   .report-page-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    border-bottom: 2px solid #000;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
-    font-size: 11px;
-    color: #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 0;
+    font-size: 9.5px;
+    color: #333;
+    flex-shrink: 0;
+  }
+
+  /* ── Cover page title ── */
+  .report-cover-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .report-main-title {
     text-align: center;
-    font-size: 28px;
+    font-size: 38px;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    margin: 40px 0;
-    line-height: 1.2;
+    line-height: 1.15;
+    margin-bottom: 0;
+    font-family: Arial Black, Arial, sans-serif;
   }
 
   .report-info-box {
     border: 2px solid #000;
-    padding: 16px 20px;
-    margin: 24px auto;
-    max-width: 360px;
+    padding: 14px 22px;
+    margin-top: 60px;
+    width: 380px;
   }
 
   .report-info-row {
-    display: flex; gap: 12px;
-    padding: 5px 0;
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
     font-size: 13px;
+    border-bottom: 1px solid #ddd;
+  }
+  .report-info-row:last-child { border-bottom: none; }
+
+  .report-info-label {
+    font-weight: 700;
+    min-width: 140px;
   }
 
-  .report-info-label { font-weight: 700; min-width: 130px; }
-
+  /* ── Page footer ── */
   .report-page-footer {
-    display: flex; justify-content: space-between;
-    border-top: 1.5px solid #888;
-    padding-top: 8px;
-    margin-top: 24px;
-    font-size: 10.5px;
-    color: #555;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #888;
+    padding-top: 6px;
+    margin-top: auto;
+    font-size: 9.5px;
+    color: #444;
+    flex-shrink: 0;
   }
 
+  /* ── Findings pages ── */
   .report-findings-title {
     font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 12px;
+    font-size: 12px;
+    margin: 10px 0 8px 0;
+    flex-shrink: 0;
+  }
+
+  .report-table-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .report-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 11.5px;
+    font-size: 10.5px;
+    table-layout: fixed;
   }
 
   .report-table th {
     background: #000;
     color: white;
-    padding: 8px 10px;
+    padding: 7px 8px;
     text-align: center;
     font-weight: 700;
-    font-size: 11px;
+    font-size: 10px;
+    border: 1px solid #000;
   }
 
+  /* Each data row is exactly 1/5 of the remaining content area
+     Content area height after header/title/footer ≈ 980px → 5 rows ≈ 164px each */
   .report-table td {
-    border: 1px solid #ccc;
-    padding: 8px 10px;
+    border: 1px solid #bbb;
+    padding: 6px 8px;
     vertical-align: middle;
     text-align: center;
+    height: 158px;      /* fixed row height — 5 rows fill the page */
+    overflow: hidden;
   }
 
-  .report-table tr:nth-child(even) td { background: #f9f9f9; }
+  .report-table td.td-finding {
+    text-align: left;
+    vertical-align: middle;
+    font-size: 10.5px;
+    word-wrap: break-word;
+  }
+
+  .report-table td.td-remarks {
+    text-align: left;
+    vertical-align: middle;
+    font-size: 10.5px;
+    word-wrap: break-word;
+  }
 
   .report-img {
-    max-width: 130px;
-    max-height: 100px;
-    object-fit: cover;
+    max-width: 148px;
+    max-height: 140px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     display: block;
     margin: auto;
-    border-radius: 3px;
   }
 
   /* ── LOADING ── */
@@ -1526,14 +1584,25 @@ function buildFindingsTable() {
 
   state.beforeImages.forEach((img, i) => {
     state.rows[i].beforeId = img.id;
+    const isOther = state.rows[i].finding && !FINDINGS_OPTIONS.slice(0,-1).includes(state.rows[i].finding);
+    const selectedVal = isOther ? 'Other (see remarks)' : (state.rows[i].finding || '');
+    const customVal = isOther ? state.rows[i].finding : '';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><span class="row-num">${i+1}</span></td>
       <td>
-        <select class="findings-select" data-row="${i}" onchange="saveRowFinding(${i},this)">
+        <select class="findings-select" data-row="${i}" onchange="handleFindingChange(${i},this)">
           <option value="">— Select finding —</option>
-          ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${state.rows[i].finding===o?'selected':''}>${o}</option>`).join('')}
+          ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${selectedVal===o?'selected':''}>${o}</option>`).join('')}
         </select>
+        <input type="text"
+               id="finding-custom-${i}"
+               class="remarks-input"
+               placeholder="Type custom finding here…"
+               style="margin-top:6px;display:${selectedVal==='Other (see remarks)'?'block':'none'}"
+               value="${customVal}"
+               oninput="saveCustomFinding(${i},this)">
       </td>
       <td class="td-before-img">
         <img class="img-cell" src="${img.dataURL}" alt="Before ${i+1}">
@@ -1542,23 +1611,45 @@ function buildFindingsTable() {
         <div id="after-slot-s3-${i}" style="font-size:12px;color:var(--ink-soft);padding:4px">(assigned in step 4)</div>
       </td>
       <td>
-        <textarea class="remarks-input" data-row="${i}" onchange="saveRowRemarks(${i},this)" placeholder="Enter remarks…">${state.rows[i].remarks||''}</textarea>
+        <textarea class="remarks-input" data-row="${i}" oninput="saveRowRemarks(${i},this)" placeholder="Enter remarks…">${state.rows[i].remarks||''}</textarea>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
 
+function handleFindingChange(i, el) {
+  const customInput = document.getElementById(`finding-custom-${i}`);
+  if (el.value === 'Other (see remarks)') {
+    customInput.style.display = 'block';
+    customInput.focus();
+    state.rows[i].finding = customInput.value || '';
+  } else {
+    customInput.style.display = 'none';
+    state.rows[i].finding = el.value;
+  }
+}
+
+function saveCustomFinding(i, el) {
+  state.rows[i].finding = el.value;
+}
+
 function saveRowFinding(i, el) { state.rows[i].finding = el.value; }
 function saveRowRemarks(i, el) { state.rows[i].remarks = el.value; }
 
 function saveFindings() {
-  // Read current table values
+  // Read current table values — handle both dropdown and custom input
   document.querySelectorAll('.findings-select[data-row]').forEach(el => {
     const i = parseInt(el.dataset.row);
-    if (state.rows[i]) state.rows[i].finding = el.value;
+    if (!state.rows[i]) return;
+    if (el.value === 'Other (see remarks)') {
+      const custom = document.getElementById(`finding-custom-${i}`);
+      state.rows[i].finding = custom ? custom.value : '';
+    } else {
+      state.rows[i].finding = el.value;
+    }
   });
-  document.querySelectorAll('.remarks-input[data-row]').forEach(el => {
+  document.querySelectorAll('textarea.remarks-input[data-row]').forEach(el => {
     const i = parseInt(el.dataset.row);
     if (state.rows[i]) state.rows[i].remarks = el.value;
   });
@@ -1614,10 +1705,16 @@ function buildUpdateTable() {
     tr.innerHTML = `
       <td><span class="row-num">${i+1}</span></td>
       <td style="font-size:12.5px">
-        <select class="findings-select" data-row="${i}" onchange="saveRowFinding(${i},this)">
+        <select class="findings-select" data-row="${i}" onchange="handleFindingChange(${i},this)">
           <option value="">— Select finding —</option>
           ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${row.finding===o?'selected':''}>${o}</option>`).join('')}
         </select>
+        <input type="text"
+               id="finding-custom-${i}"
+               class="remarks-input"
+               placeholder="Type custom finding…"
+               style="margin-top:6px;display:none"
+               oninput="saveCustomFinding(${i},this)">
       </td>
       <td class="td-before-img">
         ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
@@ -1727,57 +1824,82 @@ function buildReportHTML() {
 
   const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
 
-  // Page 1 — Cover
+  // Total pages
+  const ROWS_PER_PAGE = 5;
+  const findingChunks = [];
+  for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
+    findingChunks.push(state.rows.slice(i, i + ROWS_PER_PAGE).map((r, j) => ({ ...r, globalIdx: i + j })));
+  }
+  const totalPages = 1 + findingChunks.length;
+
+  // ── PAGE 1: Cover ──
   let html = `
   <div class="report-page" id="report-page-1">
     <div class="report-page-header">
       <span>Emirates Properties LLC</span>
-      <span>${building} &nbsp;&bull;&nbsp; ${type}</span>
+      <span>${building} &nbsp;&nbsp; ${type} &nbsp;&nbsp; Page <strong>1</strong> of ${totalPages}</span>
     </div>
 
-    <div class="report-main-title">MAINTENANCE<br>INSPECTION<br>REPORT</div>
+    <div class="report-cover-body">
+      <div class="report-main-title">MAINTENANCE<br>INSPECTION<br>REPORT</div>
 
-    <div class="report-info-box">
-      <div class="report-info-row"><span class="report-info-label"><strong>Building name</strong></span><span>:&nbsp; ${building}</span></div>
-      <div class="report-info-row"><span class="report-info-label"><strong>Inspection type</strong></span><span>:&nbsp; ${type}</span></div>
-      <div class="report-info-row"><span class="report-info-label"><strong>Report date</strong></span><span>:&nbsp; ${dateFormatted}</span></div>
+      <div class="report-info-box">
+        <div class="report-info-row">
+          <span class="report-info-label"><strong>Building name</strong></span>
+          <span>: &nbsp;${building}</span>
+        </div>
+        <div class="report-info-row">
+          <span class="report-info-label"><strong>Inspection type</strong></span>
+          <span>: &nbsp;${type}</span>
+        </div>
+        <div class="report-info-row">
+          <span class="report-info-label"><strong>Report date</strong></span>
+          <span>: &nbsp;${dateFormatted}</span>
+        </div>
+      </div>
     </div>
 
     <div class="report-page-footer">
       <span>${building}</span>
       <span>${type}</span>
-      <span>Page <strong>1</strong> of ${Math.ceil(state.rows.length / 5) + 1}</span>
+      <span>Page <strong>1</strong> of ${totalPages}</span>
     </div>
   </div>
   `;
 
-  // Page 2+ — Findings (5 rows per page)
-  const ROWS_PER_PAGE = 5;
-  const chunks = [];
-  for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
-    chunks.push(state.rows.slice(i, i + ROWS_PER_PAGE).map((r, j) => ({ ...r, globalIdx: i + j })));
-  }
+  // ── PAGES 2+: Findings ──
+  findingChunks.forEach((chunk, pageIdx) => {
+    // Pad chunk to always 5 rows so table fills the page
+    while (chunk.length < ROWS_PER_PAGE) {
+      chunk.push({ finding: '', beforeId: null, afterId: null, remarks: '' });
+    }
 
-  chunks.forEach((chunk, pageIdx) => {
     html += `
-    <div class="report-page" id="report-page-${pageIdx+2}">
+    <div class="report-page" id="report-page-${pageIdx + 2}">
       <div class="report-page-header">
         <span>Emirates Properties LLC</span>
-        <span>${building} &nbsp;&bull;&nbsp; ${type}</span>
+        <span>${building} &nbsp;&nbsp; ${type} &nbsp;&nbsp; Page <strong>${pageIdx + 2}</strong> of ${totalPages}</span>
       </div>
 
       <div class="report-findings-title">Inspection findings:</div>
 
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th style="width:28%">Findings</th>
-            <th style="width:22%">Before Picture</th>
-            <th style="width:22%">After Picture</th>
-            <th style="width:28%">Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="report-table-wrap">
+        <table class="report-table">
+          <colgroup>
+            <col style="width:25%">
+            <col style="width:25%">
+            <col style="width:25%">
+            <col style="width:25%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Findings</th>
+              <th>Before Picture</th>
+              <th>After Picture</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
 
     chunk.forEach(row => {
@@ -1786,22 +1908,23 @@ function buildReportHTML() {
 
       html += `
         <tr>
-          <td style="text-align:left;font-size:12px">${row.finding || ''}</td>
-          <td>${bImg ? `<img class="report-img" src="${bImg.dataURL}">` : ''}</td>
-          <td>${aImg ? `<img class="report-img" src="${aImg.dataURL}">` : ''}</td>
-          <td style="text-align:left;font-size:11.5px">${row.remarks || ''}</td>
+          <td class="td-finding">${row.finding || ''}</td>
+          <td>${bImg ? `<img class="report-img" src="${bImg.dataURL}" crossorigin="anonymous">` : ''}</td>
+          <td>${aImg ? `<img class="report-img" src="${aImg.dataURL}" crossorigin="anonymous">` : ''}</td>
+          <td class="td-remarks">${row.remarks || ''}</td>
         </tr>
       `;
     });
 
     html += `
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
 
       <div class="report-page-footer">
         <span>${building}</span>
         <span>${type}</span>
-        <span>Page <strong>${pageIdx+2}</strong> of ${chunks.length + 1}</span>
+        <span>Page <strong>${pageIdx + 2}</strong> of ${totalPages}</span>
       </div>
     </div>
     `;
@@ -1825,27 +1948,47 @@ async function downloadPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    // A4 in mm
+    const A4_W = 210;
+    const A4_H = 297;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
     const pages = document.querySelectorAll('.report-page');
+
     for (let i = 0; i < pages.length; i++) {
-      const canvas = await html2canvas(pages[i], {
-        scale: 2,
+      const page = pages[i];
+
+      // Force exact A4 pixel size before capture
+      const prevW = page.style.width;
+      const prevH = page.style.height;
+      page.style.width  = '794px';
+      page.style.height = '1123px';
+
+      const canvas = await html2canvas(page, {
+        scale: 2.5,           // high DPI for crisp images
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: 794,
+        height: 1123,
+        logging: false
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.9);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      page.style.width  = prevW;
+      page.style.height = prevH;
 
-      if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+      if (i > 0) pdf.addPage('a4', 'portrait');
+
+      // Place image to fill A4 exactly
+      pdf.addImage(imgData, 'JPEG', 0, 0, A4_W, A4_H, '', 'FAST');
     }
 
-    const fileName = `Inspection_Report_${state.building.replace(/\s+/g,'_')}_${state.reportDate}.pdf`;
+    const safeBuilding = state.building.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
+    const fileName = `Inspection_Report_${safeBuilding}_${state.reportDate || 'draft'}.pdf`;
     pdf.save(fileName);
+
   } catch(err) {
     alert('PDF generation failed: ' + err.message);
     console.error(err);
