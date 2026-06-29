@@ -140,9 +140,7 @@
     box-shadow: var(--shadow-sm);
   }
 
-  .top-bar-left {
-    display: flex; align-items: center; gap: 12px;
-  }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
 
   .logo-mark {
     width: 36px; height: 36px;
@@ -159,9 +157,7 @@
     color: var(--ink);
   }
 
-  .top-bar-right {
-    display: flex; align-items: center; gap: 12px;
-  }
+  .top-bar-right { display: flex; align-items: center; gap: 12px; }
 
   .user-chip {
     display: flex; align-items: center; gap: 8px;
@@ -173,11 +169,7 @@
     font-weight: 500;
   }
 
-  .user-chip img {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
+  .user-chip img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
 
   .btn-signout {
     padding: 6px 14px;
@@ -211,10 +203,7 @@
     margin-bottom: 8px;
   }
 
-  #view-home .hero p {
-    color: var(--ink-soft);
-    font-size: 15px;
-  }
+  #view-home .hero p { color: var(--ink-soft); font-size: 15px; }
 
   .home-actions {
     display: flex;
@@ -293,11 +282,7 @@
 
   .form-row.full { grid-template-columns: 1fr; }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
 
   .form-group label {
     font-size: 13px;
@@ -330,15 +315,6 @@
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 32px;
-  }
-
-  .custom-option-toggle {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 6px;
-    font-size: 12.5px;
-    color: var(--accent);
-    cursor: pointer;
-    user-select: none;
   }
 
   /* ── STEP INDICATOR ── */
@@ -464,13 +440,8 @@
     margin-bottom: 6px;
   }
 
-  .td-before-img {
-    width: 110px;
-  }
-
-  .td-after-img {
-    width: 110px;
-  }
+  .td-before-img { width: 110px; }
+  .td-after-img { width: 110px; }
 
   .img-cell {
     width: 90px; height: 70px;
@@ -546,10 +517,7 @@
     display: inline-flex; align-items: center; gap: 8px;
   }
 
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
+  .btn-primary { background: var(--accent); color: white; }
   .btn-primary:hover { background: #163d70; }
 
   .btn-secondary {
@@ -559,28 +527,15 @@
   }
   .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-  .btn-success {
-    background: var(--success);
-    color: white;
-  }
+  .btn-success { background: var(--success); color: white; }
   .btn-success:hover { background: #155e38; }
 
-  .btn-gold {
-    background: var(--gold);
-    color: white;
-  }
+  .btn-gold { background: var(--gold); color: white; }
   .btn-gold:hover { background: #a87222; }
 
-  .btn-danger {
-    background: var(--danger);
-    color: white;
-  }
+  .btn-danger { background: var(--danger); color: white; }
 
-  .btn-sm {
-    padding: 7px 14px;
-    font-size: 13px;
-    border-radius: 6px;
-  }
+  .btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 6px; }
 
   .btn-row {
     display: flex; align-items: center; gap: 12px;
@@ -591,21 +546,6 @@
   }
 
   .btn-row .spacer { flex: 1; }
-
-  /* ── PROGRESS BAR ── */
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
 
   /* ── NOTICE BANNERS ── */
   .notice {
@@ -636,7 +576,7 @@
     background: white;
     border-radius: var(--radius-lg);
     width: 100%;
-    max-width: 840px;
+    max-width: 860px;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
@@ -650,17 +590,9 @@
     display: flex; align-items: center; justify-content: space-between;
   }
 
-  .pdf-modal-header h3 {
-    font-family: var(--font-head);
-    font-size: 16px;
-    color: var(--ink);
-  }
+  .pdf-modal-header h3 { font-family: var(--font-head); font-size: 16px; color: var(--ink); }
 
-  .pdf-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-  }
+  .pdf-modal-body { flex: 1; overflow-y: auto; padding: 20px; background: #e0e0e0; }
 
   .pdf-modal-footer {
     padding: 16px 20px;
@@ -669,48 +601,106 @@
     flex-wrap: wrap;
   }
 
-  /* ── REPORT PREVIEW ── */
-  /* A4 = 210mm × 297mm. At 96dpi screen: 794px × 1123px */
+  /* ══════════════════════════════════════════════════════
+     REPORT OUTPUT — Exact replica from measured PDF constants
+     
+     Source PDF: 612×792pt (US Letter) = 816×1056px at 96dpi
+     All values measured directly from al_falasi_bldg_2_MR23626.pdf
+     using pdfplumber. These constants NEVER change.
+     
+     KEY MEASUREMENTS (px at 96dpi):
+       Page:          816 × 1056 px
+       Outer border:  left=64.67  top=30.67  right=750.13  bottom=1025.07
+       Header text:   top=35.47   left=71.47
+       Footer line:   y=1025.07
+       Footer text:   top=1011.87  left=124.8  right-col=613.33
+       Table:         left=124.8  right=710.93  top=118.93
+       Col widths:    [124.53, 156.13, 156.27, 147.20] px
+       Row height:    158px (each of 5 rows)
+       Info box:      label-x=136.8  value-x=362.53  row1-top=835.6
+  ══════════════════════════════════════════════════════ */
+
   #report-output {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     color: #000;
   }
 
-  /* Each report-page is an exact A4 page */
+  /* ── Page shell: exact Letter size 816×1056px ── */
   .report-page {
-    background: white;
-    width: 794px;          /* 210mm at 96dpi */
-    height: 1123px;        /* 297mm at 96dpi */
-    padding: 28px 36px 24px 36px;
-    border: 1px solid #ccc;
-    margin: 0 auto 20px auto;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    background: #fff;
+    width: 816px;
+    height: 1056px;
     position: relative;
-  }
-
-  /* ── Page header — company name top-left, thin line below ── */
-  .report-page-header {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-bottom: 1px solid #000;
-    padding-bottom: 5px;
-    margin-bottom: 6px;
-    font-size: 9.5px;
-    color: #333;
+    margin: 0 auto 24px auto;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
     flex-shrink: 0;
-    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.22);
   }
 
-  /* ── Cover page title ── */
-  .report-cover-body {
-    flex: 1;
+  /* ── Outer thin border rectangle (on EVERY page) ──
+     Measured: x0=48.5pt→64.67px, y0=23pt→30.67px,
+               x1=562.6pt→750.13px, y1=768.8pt→1025.07px */
+  .report-border {
+    position: absolute;
+    left:   64px;
+    top:    31px;
+    width:  686px;   /* 750-64 */
+    height: 994px;   /* 1025-31 */
+    border: 1px solid #000;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  /* ── Header: "Emirates Properties LLC"
+     Text measured at y0=35.47px, left=71.47px
+     Sits INSIDE the border box at the top ── */
+  .report-header {
+    position: absolute;
+    left:  65px;
+    top:   32px;
+    width: 685px;
+    font-size: 9px;
+    font-family: Arial, sans-serif;
+    color: #000;
+    line-height: 1;
+    padding: 4px 7px 5px 7px;
+    border-bottom: 1px solid #000;
+    box-sizing: border-box;
+  }
+
+  /* ── Footer: 3-column text
+     Line at y=1025px, text top=1011.87px
+     Left col x=124.8, right col x=613.33 ── */
+  .report-footer {
+    position: absolute;
+    left:  65px;
+    top:   1026px;
+    width: 685px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8.5px;
+    font-family: Arial, sans-serif;
+    color: #000;
+    padding: 4px 60px 0 60px;
+    box-sizing: border-box;
+  }
+
+  /* ══ COVER PAGE content ══
+     Title area rect measured: x0=94.9pt→126.5px y0=62.6pt→83.5px
+                               x1=516.5pt→688.7px y1=173.2pt→231px
+     Info box row 1 top: 626.7pt→835.6px, left: 102.6pt→136.8px
+     Value col x: 271.9pt→362.5px ── */
+  .report-cover-title {
+    position: absolute;
+    left:  126px;
+    top:   83px;
+    width: 562px;   /* 689-127 */
+    height: 148px;  /* 231-83 */
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -719,123 +709,145 @@
     text-align: center;
     font-size: 36px;
     font-weight: 900;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.2;
-    font-family: Arial Black, Arial, sans-serif;
     text-decoration: underline;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    font-family: 'Arial Black', Arial, sans-serif;
+    color: #000;
   }
 
+  /* Info box: starts at left=136.8px, top=~610px (before row1 text at 835.6)
+     We position the box so label text lands at 835.6px
+     Box border measured as bold (~1.5pt) from visual inspection */
   .report-info-box {
-    border: 2px solid #000;
-    padding: 10px 18px;
-    margin-top: 80px;
-    width: 420px;
+    position: absolute;
+    left:  137px;
+    top:   600px;
+    width: 390px;
+    border: 1.5px solid #000;
     font-family: Arial, sans-serif;
+    font-size: 12.5px;
+    box-sizing: border-box;
   }
 
   .report-info-row {
     display: flex;
     align-items: center;
-    padding: 8px 0;
-    font-size: 13px;
-    border-bottom: 1px solid #ddd;
+    padding: 9px 14px;
+    border-bottom: 1px solid #ccc;
+    min-height: 34px;
+    line-height: 1.2;
   }
   .report-info-row:last-child { border-bottom: none; }
 
   .report-info-label {
     font-weight: 700;
-    min-width: 160px;
-    display: inline-block;
+    min-width: 145px;
+    white-space: nowrap;
+    font-size: 12.5px;
+  }
+  .report-info-value {
+    padding-left: 6px;
+    font-weight: 400;
+    font-size: 12.5px;
   }
 
-  /* ── Page footer — exact match: left=building, center=type, right=page X of N ── */
-  .report-page-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #888;
-    padding-top: 5px;
-    margin-top: auto;
-    font-size: 9px;
-    color: #444;
-    flex-shrink: 0;
+  /* ══ FINDINGS PAGE content ══
+     "Inspection findings:" text measured at y=70.3pt→93.73px, x=93.6pt→124.8px
+     Table top at y=89.2pt→118.93px
+     Table: left=124.8px, right=710.93px, width=586.13px
+     5 rows × 158px each ── */
+
+  .report-findings-label {
+    position: absolute;
+    left:  125px;
+    top:   68px;   /* slight offset from measured 93.73 to account for header */
+    font-size: 9.5px;
+    font-weight: 700;
     font-family: Arial, sans-serif;
+    color: #000;
   }
 
-  /* ── Findings pages ── */
-  .report-findings-title {
-    font-weight: 700;
-    font-size: 12px;
-    margin: 10px 0 8px 0;
-    flex-shrink: 0;
+  /* Table container: positioned exactly */
+  .report-table-container {
+    position: absolute;
+    left:  125px;
+    top:   90px;
+    width: 586px;
+    /* height is set dynamically per page */
   }
 
-  .report-table-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
+  /* ── Findings table: exact col widths from measurements ──
+     Cols: [124.53, 156.13, 156.27, 147.20] px  */
   .report-table {
-    width: 100%;
+    width: 586px;
     border-collapse: collapse;
-    font-size: 10.5px;
+    font-size: 9px;
+    font-family: Arial, sans-serif;
     table-layout: fixed;
-  }
-
-  .report-table th {
-    background: #ffffff;
-    color: #000000;
-    padding: 6px 8px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 10.5px;
     border: 1px solid #000;
   }
 
-  /* Each data row is exactly 1/5 of the remaining content area
-     Content area height after header/title/footer ≈ 980px → 5 rows ≈ 164px each */
-  .report-table td {
-    border: 1px solid #bbb;
-    padding: 6px 8px;
-    vertical-align: middle;
+  .report-table colgroup col:nth-child(1) { width: 125px; }
+  .report-table colgroup col:nth-child(2) { width: 156px; }
+  .report-table colgroup col:nth-child(3) { width: 156px; }
+  .report-table colgroup col:nth-child(4) { width: 149px; }
+
+  .report-table thead tr th {
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    font-size: 9px;
     text-align: center;
-    height: 158px;      /* fixed row height — 5 rows fill the page */
+    vertical-align: middle;
+    padding: 5px 4px;
+    border: 1px solid #000;
+    line-height: 1.2;
+  }
+
+  /* Each data row: measured height = 158px */
+  .report-table tbody tr td {
+    border: 1px solid #000;
+    vertical-align: middle;
     overflow: hidden;
+    height: 158px;
   }
 
   .report-table td.td-finding {
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
-    font-size: 10.5px;
+    padding: 6px 8px;
+    font-size: 9px;
     word-wrap: break-word;
+    line-height: 1.4;
   }
 
   .report-table td.td-remarks {
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
-    font-size: 10.5px;
+    padding: 6px 6px;
+    font-size: 9px;
     word-wrap: break-word;
+    line-height: 1.4;
   }
 
+  .report-table td.td-img-cell {
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  /* Images fill cell exactly — measured row height 158px */
   .report-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: block;
-  }
-
-  .td-img-cell {
-    padding: 0 !important;
-    overflow: hidden;
+    width: 100%;
+    height: 158px;
+    object-fit: cover;
   }
 
   /* ── STEP 4 per-row after-photo slots ── */
   .s4-slot {
-    width: 90px;
-    height: 70px;
+    width: 90px; height: 70px;
     border: 2px dashed var(--border-strong);
     border-radius: 6px;
     display: flex;
@@ -907,7 +919,6 @@
     .main-content { padding: 20px 14px 60px; }
   }
 
-  /* ── TAG ── */
   .badge {
     display: inline-flex; align-items: center;
     padding: 2px 9px;
@@ -1083,7 +1094,7 @@
       </div>
 
       <div class="steps">
-        <div class="step done" id="s1a"><div class="step-num">✓</div><span>Report Details</span></div>
+        <div class="step done"><div class="step-num">✓</div><span>Report Details</span></div>
         <div class="step-divider done"></div>
         <div class="step active"><div class="step-num">2</div><span>Upload Before Photos</span></div>
         <div class="step-divider"></div>
@@ -1176,15 +1187,12 @@
         <div class="step active"><div class="step-num">4</div><span>After Photos</span></div>
       </div>
 
-      <!-- Bulk upload zone -->
       <div class="card">
         <div class="card-title">📸 After Condition Photos <span style="font-size:12px;font-weight:400;color:var(--ink-soft)">(Optional)</span></div>
-
         <div class="notice notice-info" style="margin-bottom:14px">
           ℹ️ <strong>Bulk upload:</strong> Select all after photos at once — they auto-fill rows in order.
           Use the <strong>📷 / 📁</strong> button on each row to replace individual photos, or <strong>drag photos between rows</strong> to reorder.
         </div>
-
         <div class="upload-zone" id="after-dropzone"
              onclick="document.getElementById('after-files').click()"
              ondragover="handleDragOver(event,'after-dropzone')"
@@ -1197,12 +1205,10 @@
         <input type="file" id="after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFiles(event)">
       </div>
 
-      <!-- Per-row table -->
       <div class="card" style="overflow-x:auto">
         <div class="card-title">📋 After Photos per Row</div>
         <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px">
-          Each row shows the before photo and its after slot. 
-          Drag an after photo from one slot to another to reorder.
+          Each row shows the before photo and its after slot. Drag an after photo from one slot to another to reorder.
           Click <strong>📷</strong> to take a photo (mobile) or <strong>📁</strong> to pick a file for that row.
         </p>
         <table class="findings-table" id="findings-table-step4">
@@ -1275,10 +1281,163 @@
 
 <!-- ═══ PDF PREVIEW MODAL ═══ -->
 <div id="pdf-preview-container">
+
+  <!-- Layout Editor Panel -->
+  <div id="layout-editor" style="
+    position:fixed;top:12px;right:12px;z-index:1100;
+    background:#fff;border-radius:12px;padding:16px 18px;
+    box-shadow:0 4px 24px rgba(0,0,0,0.22);
+    width:270px;font-family:-apple-system,sans-serif;font-size:13px;
+    max-height:92vh;overflow-y:auto;
+  ">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-weight:700;font-size:14px;color:#1a1a2e">🎛 Layout Editor</span>
+      <button onclick="toggleEditor()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#888">⟨</button>
+    </div>
+
+    <!-- COVER PAGE -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1b4f8a;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid #e8f0fa">Cover Page</div>
+
+    <div class="le-row">
+      <label>Border margin (all sides)</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-border-margin" min="0" max="40" value="8" oninput="applyLayout()">
+        <span id="le-border-margin-val">8</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Header padding top</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-hdr-pt" min="4" max="30" value="10" oninput="applyLayout()">
+        <span id="le-hdr-pt-val">10</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Header padding bottom</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-hdr-pb" min="2" max="20" value="8" oninput="applyLayout()">
+        <span id="le-hdr-pb-val">8</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Title top spacing</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-title-top" min="20" max="250" value="110" oninput="applyLayout()">
+        <span id="le-title-top-val">110</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Title font size</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-title-size" min="20" max="55" value="38" oninput="applyLayout()">
+        <span id="le-title-size-val">38</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Info box top margin</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-infobox-mt" min="10" max="120" value="52" oninput="applyLayout()">
+        <span id="le-infobox-mt-val">52</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Info box width</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-infobox-w" min="200" max="600" value="380" oninput="applyLayout()">
+        <span id="le-infobox-w-val">380</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Info box font size</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-infobox-fs" min="8" max="20" value="13" oninput="applyLayout()">
+        <span id="le-infobox-fs-val">13</span>px
+      </div>
+    </div>
+
+    <!-- FINDINGS PAGES -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1b4f8a;margin:14px 0 8px;padding-bottom:4px;border-bottom:1.5px solid #e8f0fa">Findings Pages</div>
+
+    <div class="le-row">
+      <label>Page padding (L/R)</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-findings-px" min="0" max="80" value="20" oninput="applyLayout()">
+        <span id="le-findings-px-val">20</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Page padding top</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-findings-pt" min="0" max="40" value="20" oninput="applyLayout()">
+        <span id="le-findings-pt-val">20</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>"Findings:" label gap below</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-findings-gap" min="0" max="40" value="16" oninput="applyLayout()">
+        <span id="le-findings-gap-val">16</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Table row height</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-row-h" min="80" max="280" value="190" oninput="applyLayout()">
+        <span id="le-row-h-val">190</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Table font size</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-table-fs" min="7" max="16" value="10" oninput="applyLayout()">
+        <span id="le-table-fs-val">10</span>px
+      </div>
+    </div>
+
+    <!-- HEADER / FOOTER shared -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#1b4f8a;margin:14px 0 8px;padding-bottom:4px;border-bottom:1.5px solid #e8f0fa">Header / Footer</div>
+
+    <div class="le-row">
+      <label>Header font size</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-hdr-fs" min="6" max="14" value="9" oninput="applyLayout()">
+        <span id="le-hdr-fs-val">9</span>px
+      </div>
+    </div>
+
+    <div class="le-row">
+      <label>Footer font size</label>
+      <div class="le-ctrl">
+        <input type="range" id="le-ftr-fs" min="6" max="14" value="9" oninput="applyLayout()">
+        <span id="le-ftr-fs-val">9</span>px
+      </div>
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button onclick="resetLayout()" style="flex:1;padding:8px;border:1.5px solid #d8d8e8;border-radius:7px;background:#fff;cursor:pointer;font-size:12px">↺ Reset</button>
+      <button onclick="copyLayoutCode()" style="flex:1;padding:8px;border:none;border-radius:7px;background:#1b4f8a;color:#fff;cursor:pointer;font-size:12px">📋 Copy values</button>
+    </div>
+    <div id="le-copy-notice" style="display:none;margin-top:8px;font-size:11px;color:#1a7a4a;text-align:center">✓ Copied to clipboard!</div>
+  </div>
+
   <div class="pdf-modal">
     <div class="pdf-modal-header">
       <h3>📄 Report Preview</h3>
-      <button class="btn btn-secondary btn-sm" onclick="closePreview()">✕ Close</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="toggleEditor()" style="padding:6px 12px;border:1.5px solid #d8d8e8;border-radius:7px;background:#f8f7f4;font-size:13px;cursor:pointer">🎛 Layout</button>
+        <button class="btn btn-secondary btn-sm" onclick="closePreview()">✕ Close</button>
+      </div>
     </div>
     <div class="pdf-modal-body">
       <div id="report-output"></div>
@@ -1297,14 +1456,41 @@
   </div>
 </div>
 
+<style>
+.le-row {
+  margin-bottom: 9px;
+}
+.le-row label {
+  display: block;
+  font-size: 11.5px;
+  color: #4a4a6a;
+  margin-bottom: 3px;
+}
+.le-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.le-ctrl input[type=range] {
+  flex: 1;
+  height: 4px;
+  accent-color: #1b4f8a;
+  cursor: pointer;
+}
+.le-ctrl span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1b4f8a;
+  min-width: 26px;
+  text-align: right;
+}
+</style>
+
 <script>
 // ═══════════════════════════════════════════════
 //  CONFIGURATION — EDIT THESE VALUES
 // ═══════════════════════════════════════════════
-
 const FIREBASE_CONFIG = {
-  // STEP 1: Go to https://console.firebase.google.com
-  // Create a project → Add web app → Copy config here
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
   projectId: "YOUR_PROJECT_ID",
@@ -1313,14 +1499,13 @@ const FIREBASE_CONFIG = {
   appId: "YOUR_APP_ID"
 };
 
-// STEP 2: Add BOTH allowed Gmail addresses here (yours + the other person)
 const ALLOWED_EMAILS = [
   "your.email@gmail.com",
   "colleague.email@gmail.com"
 ];
 
 // ═══════════════════════════════════════════════
-//  PREDEFINED FINDINGS (add/edit as needed)
+//  PREDEFINED FINDINGS
 // ═══════════════════════════════════════════════
 const FINDINGS_OPTIONS = [
   "Entrance painting required / façade cleaning required",
@@ -1363,27 +1548,22 @@ let state = {
   building: '',
   inspectionType: '',
   reportDate: '',
-  beforeImages: [],   // {id, name, dataURL}
-  afterImages: [],    // {id, name, dataURL}
-  rows: [],           // {finding, beforeId, afterId, remarks}
+  beforeImages: [],
+  afterImages: [],
+  rows: [],
   isUpdateMode: false,
   updateAfterImages: []
 };
-
-
 
 // ═══════════════════════════════════════════════
 //  FIREBASE INIT & AUTH
 // ═══════════════════════════════════════════════
 let auth;
-
-// Demo mode if no Firebase config
 const IS_DEMO = FIREBASE_CONFIG.apiKey === "YOUR_API_KEY";
 
 if (!IS_DEMO) {
   firebase.initializeApp(FIREBASE_CONFIG);
   auth = firebase.auth();
-
   auth.onAuthStateChanged(user => {
     if (user) {
       if (!ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
@@ -1396,15 +1576,11 @@ if (!IS_DEMO) {
       showAuthScreen();
     }
   });
-
   document.getElementById('btn-signin').onclick = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-      showAuthError(err.message);
-    });
+    auth.signInWithPopup(provider).catch(err => { showAuthError(err.message); });
   };
 } else {
-  // DEMO MODE — skip auth for testing
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-name').textContent = 'Demo User';
@@ -1449,7 +1625,6 @@ function showView(id) {
 function goHome() { showView('view-home'); resetState(); }
 
 function initApp() {
-  // Set default date
   const today = new Date().toISOString().split('T')[0];
   const d = document.getElementById('inp-date');
   if (d) d.value = today;
@@ -1477,11 +1652,8 @@ function startNewReport() {
 
 function startUpdateReport() {
   state.isUpdateMode = true;
-  // For demo/update mode: we pre-populate with sample rows
-  // In real use, the "before" data is already in state from a previous session
-  // We'll show the update view which lets them add after photos & edit remarks
   if (state.rows.length === 0) {
-    alert("Please first generate a report in this session. Then use Update Report to add after photos. (In production, data would persist via Firebase.)");
+    alert("Please first generate a report in this session. Then use Update Report to add after photos.");
     return;
   }
   document.getElementById('update-findings-card').style.display = 'block';
@@ -1538,7 +1710,6 @@ function buildingSuggest(query) {
   ul.innerHTML = '';
   matches.forEach((name, i) => {
     const li = document.createElement('li');
-    // Highlight matched portion
     const idx = name.toLowerCase().indexOf(query.toLowerCase());
     li.innerHTML = idx >= 0 && query
       ? name.slice(0, idx) + '<strong>' + name.slice(idx, idx + query.length) + '</strong>' + name.slice(idx + query.length)
@@ -1591,7 +1762,6 @@ function selectBuilding(name) {
   buildingSuggestionIndex = -1;
 }
 
-// Close suggestions when clicking outside
 document.addEventListener('click', function(e) {
   if (!e.target.closest || (!e.target.closest('#inp-building') && !e.target.closest('#building-suggestions'))) {
     const ul = document.getElementById('building-suggestions');
@@ -1628,7 +1798,6 @@ function goToStep3() {
 }
 
 function goToStep4() {
-  // Save current findings from table
   saveFindings();
   buildStep4Table();
   showView('view-step4');
@@ -1659,22 +1828,16 @@ async function handleBeforeFiles(event) {
 
 async function handleAfterFiles(event) {
   const files = Array.from(event.target.files);
-  // Read all files
   const newImgs = [];
-  for (const f of files) {
-    newImgs.push(await readFile(f));
-  }
-  // Auto-assign sequentially starting from first unassigned row
+  for (const f of files) { newImgs.push(await readFile(f)); }
   let rowCursor = 0;
   for (const img of newImgs) {
-    // Find next row without an after image
     while (rowCursor < state.rows.length && state.rows[rowCursor].afterId !== null) rowCursor++;
     if (rowCursor < state.rows.length) {
       state.afterImages.push(img);
       state.rows[rowCursor].afterId = img.id;
       rowCursor++;
     } else {
-      // All rows filled — still store the image
       state.afterImages.push(img);
     }
   }
@@ -1695,15 +1858,8 @@ async function handleUpdateAfterFiles(event) {
   event.target.value = '';
 }
 
-// Drag-over zones (upload zone)
-function handleDragOver(e, zoneId) {
-  e.preventDefault();
-  document.getElementById(zoneId).classList.add('dragover');
-}
-
-function handleDragLeave(zoneId) {
-  document.getElementById(zoneId).classList.remove('dragover');
-}
+function handleDragOver(e, zoneId) { e.preventDefault(); document.getElementById(zoneId).classList.add('dragover'); }
+function handleDragLeave(zoneId) { document.getElementById(zoneId).classList.remove('dragover'); }
 
 async function handleDrop(e, type) {
   e.preventDefault();
@@ -1741,32 +1897,16 @@ async function handleDrop(e, type) {
 }
 
 // ═══════════════════════════════════════════════
-//  IMAGE POOLS (thumbnails)
+//  IMAGE POOLS
 // ═══════════════════════════════════════════════
 function renderBeforePool() {
   const pool = document.getElementById('before-pool');
   pool.innerHTML = '';
-  state.beforeImages.forEach((img, i) => {
+  state.beforeImages.forEach((img) => {
     const el = document.createElement('img');
     el.className = 'pool-thumb';
     el.src = img.dataURL;
     el.title = img.name;
-    pool.appendChild(el);
-  });
-}
-
-function renderAfterPool() {
-  const pool = document.getElementById('after-pool');
-  pool.innerHTML = '';
-  state.afterImages.forEach((img, i) => {
-    const el = document.createElement('img');
-    el.className = 'pool-thumb';
-    el.src = img.dataURL;
-    el.title = img.name;
-    el.draggable = true;
-    el.dataset.imgId = img.id;
-    el.dataset.source = 'after';
-    el.addEventListener('dragstart', onThumbDragStart);
     pool.appendChild(el);
   });
 }
@@ -1779,10 +1919,6 @@ function renderUpdateAfterPool() {
     el.className = 'pool-thumb';
     el.src = img.dataURL;
     el.title = img.name;
-    el.draggable = true;
-    el.dataset.imgId = img.id;
-    el.dataset.source = 'update-after';
-    el.addEventListener('dragstart', onThumbDragStart);
     pool.appendChild(el);
   });
 }
@@ -1794,7 +1930,6 @@ function buildFindingsTable() {
   const tbody = document.getElementById('findings-tbody');
   tbody.innerHTML = '';
 
-  // Ensure rows match image count
   while (state.rows.length < state.beforeImages.length) {
     state.rows.push({ finding: '', beforeId: null, afterId: null, remarks: '' });
   }
@@ -1826,7 +1961,7 @@ function buildFindingsTable() {
         <img class="img-cell" src="${img.dataURL}" alt="Before ${i+1}">
       </td>
       <td class="td-after-img">
-        <div id="after-slot-s3-${i}" style="font-size:12px;color:var(--ink-soft);padding:4px">(assigned in step 4)</div>
+        <div style="font-size:12px;color:var(--ink-soft);padding:4px">(assigned in step 4)</div>
       </td>
       <td>
         <textarea class="remarks-input" data-row="${i}" oninput="saveRowRemarks(${i},this)" placeholder="Enter remarks…">${state.rows[i].remarks||''}</textarea>
@@ -1848,15 +1983,10 @@ function handleFindingChange(i, el) {
   }
 }
 
-function saveCustomFinding(i, el) {
-  state.rows[i].finding = el.value;
-}
-
-function saveRowFinding(i, el) { state.rows[i].finding = el.value; }
+function saveCustomFinding(i, el) { state.rows[i].finding = el.value; }
 function saveRowRemarks(i, el) { state.rows[i].remarks = el.value; }
 
 function saveFindings() {
-  // Read current table values — handle both dropdown and custom input
   document.querySelectorAll('.findings-select[data-row]').forEach(el => {
     const i = parseInt(el.dataset.row);
     if (!state.rows[i]) return;
@@ -1874,9 +2004,9 @@ function saveFindings() {
 }
 
 // ═══════════════════════════════════════════════
-//  STEP 4 TABLE — per-row with drag-between-slots, camera, file
+//  STEP 4 TABLE
 // ═══════════════════════════════════════════════
-let s4DragFromRow = null; // row index being dragged FROM
+let s4DragFromRow = null;
 
 function buildStep4Table() {
   const tbody = document.getElementById('findings-tbody-step4');
@@ -1929,7 +2059,6 @@ function buildStep4Table() {
   });
 }
 
-// ── Per-slot drag (swap between rows) ──
 function s4DragStart(e, fromRow) {
   s4DragFromRow = fromRow;
   e.dataTransfer.setData('text/plain', String(fromRow));
@@ -1960,8 +2089,6 @@ function s4Drop(e, toRow) {
   if (fromSlot) fromSlot.style.opacity = '';
   if (toSlot) toSlot.classList.remove('drag-over');
   if (fromRow === toRow) return;
-
-  // Swap afterId between rows
   const tmp = state.rows[fromRow].afterId;
   state.rows[fromRow].afterId = state.rows[toRow].afterId;
   state.rows[toRow].afterId = tmp;
@@ -1969,34 +2096,22 @@ function s4Drop(e, toRow) {
   buildStep4Table();
 }
 
-// ── Per-row camera (capture=environment triggers camera on mobile) ──
 function s4CameraOrFile(rowIdx) {
   const inp = document.createElement('input');
-  inp.type = 'file';
-  inp.accept = 'image/*';
-  inp.capture = 'environment'; // opens camera on mobile
-  inp.onchange = async (e) => {
-    if (!e.target.files[0]) return;
-    await s4AssignFile(rowIdx, e.target.files[0]);
-  };
+  inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment';
+  inp.onchange = async (e) => { if (!e.target.files[0]) return; await s4AssignFile(rowIdx, e.target.files[0]); };
   inp.click();
 }
 
-// ── Per-row file picker (no camera) ──
 function s4PickFile(rowIdx) {
   const inp = document.createElement('input');
-  inp.type = 'file';
-  inp.accept = 'image/*';
-  inp.onchange = async (e) => {
-    if (!e.target.files[0]) return;
-    await s4AssignFile(rowIdx, e.target.files[0]);
-  };
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = async (e) => { if (!e.target.files[0]) return; await s4AssignFile(rowIdx, e.target.files[0]); };
   inp.click();
 }
 
 async function s4AssignFile(rowIdx, file) {
   const img = await readFile(file);
-  // Replace existing afterId in pool if present
   if (state.rows[rowIdx].afterId !== null) {
     const oldIdx = state.afterImages.findIndex(x => x.id === state.rows[rowIdx].afterId);
     if (oldIdx >= 0) state.afterImages.splice(oldIdx, 1);
@@ -2035,22 +2150,12 @@ function buildUpdateTable() {
           <option value="">— Select finding —</option>
           ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${row.finding===o?'selected':''}>${o}</option>`).join('')}
         </select>
-        <input type="text"
-               id="finding-custom-${i}"
-               class="remarks-input"
-               placeholder="Type custom finding…"
-               style="margin-top:6px;display:none"
-               oninput="saveCustomFinding(${i},this)">
       </td>
       <td class="td-before-img">
         ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
       </td>
       <td class="td-after-img">
-        <div class="drop-slot" id="update-slot-${i}"
-             ondragover="slotDragOver(event,${i})"
-             ondragleave="slotDragLeave(${i})"
-             ondrop="slotDrop(event,${i},'update-after')"
-             onclick="slotClick(${i},'update-after')">
+        <div class="drop-slot" id="update-slot-${i}">
           ${aImg
             ? `<img class="img-cell" src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`
             : `<span>📷</span><span style="font-size:10px">Drop here</span>`}
@@ -2065,14 +2170,12 @@ function buildUpdateTable() {
 }
 
 // ═══════════════════════════════════════════════
-//  REPORT GENERATION
+//  REPORT HTML BUILDER
 // ═══════════════════════════════════════════════
 function generateReport(isUpdate) {
   saveFindings();
-
   const output = document.getElementById('report-output');
   output.innerHTML = buildReportHTML();
-
   document.getElementById('pdf-preview-container').classList.add('open');
 }
 
@@ -2081,114 +2184,121 @@ function buildReportHTML() {
   const type = state.inspectionType;
   const rawDate = state.reportDate;
   const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
-
-  // Cover title = inspection type in upper case e.g. "MAINTENANCE INSPECTION REPORT"
-  const coverTitle = (type.toUpperCase() + '\nREPORT').replace(/\n/, '<br>');
-
+  const upperType = type.toUpperCase();
+  const coverTitle = upperType + '<br>REPORT';
   const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
 
-  // Total pages
   const ROWS_PER_PAGE = 5;
+  const realRows = state.rows.filter(r => r.beforeId || r.finding || r.remarks);
   const findingChunks = [];
-  for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
-    findingChunks.push(state.rows.slice(i, i + ROWS_PER_PAGE).map((r, j) => ({ ...r, globalIdx: i + j })));
+  for (let i = 0; i < realRows.length; i += ROWS_PER_PAGE) {
+    findingChunks.push(realRows.slice(i, i + ROWS_PER_PAGE));
   }
+  if (findingChunks.length === 0) findingChunks.push([]);
   const totalPages = 1 + findingChunks.length;
 
-  // ── PAGE 1: Cover — exact replica of reference PDF ──
+  // ── Exact layout constants (measured from al_falasi PDF via pdfplumber) ──
+  // Page: 816×1056px (US Letter at 96dpi)
+  // Outer border: left=64px top=31px width=686px height=994px
+  // Header text: top=32px left=72px, font-size=9px
+  // Header rule: y=~50px (bottom of header text area, inside border)
+  // Footer rule: y=1025px; footer text: top=1030px, padded 60px each side
+  // Cover title area: left=126px top=83px width=562px height=148px
+  // Cover info box: left=137px top=600px width=390px
+  // Findings label: left=125px top=68px
+  // Table: left=125px top=90px width=586px
+  // Col widths: [125, 156, 156, 149]px
+  // Row height: 158px × 5 rows
+
+  // ══ PAGE 1: Cover ══
   let html = `
-  <div class="report-page" id="report-page-1">
-    <div class="report-page-header">
-      <span>Emirates Properties LLC</span>
+<div class="report-page" id="report-page-1">
+  <!-- Outer thin border rectangle — same on every page -->
+  <div class="report-border"></div>
+
+  <!-- Header: "Emirates Properties LLC" inside border with rule below -->
+  <div class="report-header">Emirates Properties LLC</div>
+
+  <!-- Cover title: centred in upper portion of border -->
+  <div class="report-cover-title">
+    <div class="report-main-title">${coverTitle}</div>
+  </div>
+
+  <!-- Info box: absolutely positioned at measured location -->
+  <div class="report-info-box">
+    <div class="report-info-row">
+      <span class="report-info-label"><b>Building name &nbsp;:</b></span>
+      <span class="report-info-value">${building}</span>
     </div>
-
-    <div class="report-cover-body">
-      <div class="report-main-title">${coverTitle}</div>
-
-      <div class="report-info-box">
-        <div class="report-info-row">
-          <span class="report-info-label"><strong>Building name</strong>&nbsp;&nbsp;:</span>
-          <span>&nbsp;&nbsp;${building}</span>
-        </div>
-        <div class="report-info-row">
-          <span class="report-info-label"><strong>Inspection type :</strong></span>
-          <span>&nbsp;&nbsp;${type}</span>
-        </div>
-        <div class="report-info-row" style="border-bottom:none">
-          <span class="report-info-label"><strong>Report date</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>
-          <span>&nbsp;&nbsp;${dateFormatted}</span>
-        </div>
-      </div>
+    <div class="report-info-row">
+      <span class="report-info-label"><b>Inspection type :</b></span>
+      <span class="report-info-value">${type}</span>
     </div>
-
-    <div class="report-page-footer">
-      <span>${building}</span>
-      <span>${type}</span>
-      <span>Page <strong>1</strong> of ${totalPages}</span>
+    <div class="report-info-row" style="border-bottom:none">
+      <span class="report-info-label"><b>Report date &nbsp;&nbsp;&nbsp;:</b></span>
+      <span class="report-info-value">${dateFormatted}</span>
     </div>
   </div>
-  `;
 
-  // ── PAGES 2+: Findings ──
+  <!-- Footer: 3-column, below border line -->
+  <div class="report-footer">
+    <span>${building}</span>
+    <span>${type}</span>
+    <span>Page <b>1</b> of ${totalPages}</span>
+  </div>
+</div>`;
+
+  // ══ PAGES 2+: Findings ══
+  // Measured: 5 rows × 158px = 790px table body
+  // Table top=90px, col widths=[125,156,156,149]
+  // Last page: only real rows, table shrinks naturally
   findingChunks.forEach((chunk, pageIdx) => {
-    // Pad chunk to always 5 rows so table fills the page
-    while (chunk.length < ROWS_PER_PAGE) {
-      chunk.push({ finding: '', beforeId: null, afterId: null, remarks: '' });
-    }
-
-    html += `
-    <div class="report-page" id="report-page-${pageIdx + 2}">
-      <div class="report-page-header">
-        <span>Emirates Properties LLC</span>
-      </div>
-
-      <div class="report-findings-title">Inspection findings:</div>
-
-      <div class="report-table-wrap">
-        <table class="report-table">
-          <colgroup>
-            <col style="width:22%">
-            <col style="width:26%">
-            <col style="width:26%">
-            <col style="width:26%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Findings</th>
-              <th>Before Picture</th>
-              <th>After Picture</th>
-              <th>Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-    `;
-
+    let rowsHtml = '';
     chunk.forEach(row => {
       const bImg = state.beforeImages.find(x => x.id === row.beforeId);
       const aImg = afterPool.find(x => x.id === row.afterId);
-
-      html += `
-        <tr>
-          <td class="td-finding">${row.finding || ''}</td>
-          <td class="td-img-cell">${bImg ? `<img class="report-img" src="${bImg.dataURL}" crossorigin="anonymous">` : ''}</td>
-          <td class="td-img-cell">${aImg ? `<img class="report-img" src="${aImg.dataURL}" crossorigin="anonymous">` : ''}</td>
-          <td class="td-remarks">${row.remarks || ''}</td>
-        </tr>
-      `;
+      rowsHtml += `
+<tr>
+  <td class="td-finding">${row.finding || ''}</td>
+  <td class="td-img-cell">${bImg ? `<img class="report-img" src="${bImg.dataURL}">` : ''}</td>
+  <td class="td-img-cell">${aImg ? `<img class="report-img" src="${aImg.dataURL}">` : ''}</td>
+  <td class="td-remarks">${(row.remarks || '').replace(/\n/g,'<br>')}</td>
+</tr>`;
     });
 
     html += `
-          </tbody>
-        </table>
-      </div>
+<div class="report-page" id="report-page-${pageIdx + 2}">
+  <div class="report-border"></div>
+  <div class="report-header">Emirates Properties LLC</div>
 
-      <div class="report-page-footer">
-        <span>${building}</span>
-        <span>${type}</span>
-        <span>Page <strong>${pageIdx + 2}</strong> of ${totalPages}</span>
-      </div>
-    </div>
-    `;
+  <div class="report-findings-label">Inspection findings:</div>
+
+  <div class="report-table-container">
+    <table class="report-table">
+      <colgroup>
+        <col style="width:125px">
+        <col style="width:156px">
+        <col style="width:156px">
+        <col style="width:149px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Findings</th>
+          <th>Before Picture</th>
+          <th>After Picture</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+  </div>
+
+  <div class="report-footer">
+    <span>${building}</span>
+    <span>${type}</span>
+    <span>Page <b>${pageIdx + 2}</b> of ${totalPages}</span>
+  </div>
+</div>`;
   });
 
   return html;
@@ -2209,24 +2319,19 @@ async function downloadPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-    // A4 in mm
-    const A4_W = 210;
-    const A4_H = 297;
+    const A4_W = 210, A4_H = 297;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
     const pages = document.querySelectorAll('.report-page');
 
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i];
-
-      // Force exact A4 pixel size before capture
       const prevW = page.style.width;
       const prevH = page.style.height;
       page.style.width  = '794px';
       page.style.height = '1123px';
 
       const canvas = await html2canvas(page, {
-        scale: 2.5,           // high DPI for crisp images
+        scale: 2.5,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -2239,17 +2344,13 @@ async function downloadPDF() {
       page.style.height = prevH;
 
       const imgData = canvas.toDataURL('image/jpeg', 0.92);
-
       if (i > 0) pdf.addPage('a4', 'portrait');
-
-      // Place image to fill A4 exactly
       pdf.addImage(imgData, 'JPEG', 0, 0, A4_W, A4_H, '', 'FAST');
     }
 
     const safeBuilding = state.building.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
     const safeType = state.inspectionType.replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
-    const fileName = `${safeType}_${safeBuilding}_${state.reportDate || 'draft'}.pdf`;
-    pdf.save(fileName);
+    pdf.save(`${safeType}_${safeBuilding}_${state.reportDate || 'draft'}.pdf`);
 
   } catch(err) {
     alert('PDF generation failed: ' + err.message);
@@ -2276,32 +2377,28 @@ async function downloadWord() {
     const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
     const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
     const ROWS_PER_PAGE = 5;
-    const coverTitle = type.toUpperCase() + ' REPORT';
+    const coverTitle = type.toUpperCase() + '<br>REPORT';
 
-    // Build an HTML document that Word can open
-    // We embed images as base64 data URIs
-    const pages = document.querySelectorAll('.report-page');
     let bodyHtml = '';
 
-    // Cover page
+    // Cover page — matching the reference layout with border rectangle
     bodyHtml += `
-      <div style="font-family:Arial,sans-serif;page-break-after:always;padding:28px 36px;min-height:1000px;position:relative">
-        <p style="font-size:9pt;border-bottom:1pt solid black;padding-bottom:4pt;margin-bottom:12pt">Emirates Properties LLC</p>
-        <div style="text-align:center;margin-top:120pt">
-          <h1 style="font-size:28pt;font-weight:900;letter-spacing:2pt;text-transform:uppercase;line-height:1.3">${coverTitle.replace(' REPORT','<br>REPORT')}</h1>
+      <div style="font-family:Arial,sans-serif;page-break-after:always;padding:0;min-height:1050px;display:flex;flex-direction:column;">
+        <p style="font-size:9pt;border-bottom:1pt solid black;padding:10pt 36pt 6pt;margin:0">Emirates Properties LLC</p>
+        <div style="flex:1;border:1pt solid black;margin:14pt 18pt;display:flex;flex-direction:column;align-items:center;padding-top:110pt;padding-bottom:40pt;">
+          <h1 style="font-size:28pt;font-weight:900;letter-spacing:2pt;text-transform:uppercase;line-height:1.3;text-decoration:underline;text-align:center">${coverTitle}</h1>
+          <table style="border:2pt solid black;margin:50pt auto 0;width:380pt;border-collapse:collapse">
+            <tr><td style="padding:9pt 14pt;font-size:11pt;border-bottom:1pt solid #ccc"><b>Building name &nbsp;&nbsp;:</b>&nbsp;&nbsp;${building}</td></tr>
+            <tr><td style="padding:9pt 14pt;font-size:11pt;border-bottom:1pt solid #ccc"><b>Inspection type :</b>&nbsp;&nbsp;${type}</td></tr>
+            <tr><td style="padding:9pt 14pt;font-size:11pt"><b>Report date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;${dateFormatted}</td></tr>
+          </table>
         </div>
-        <table style="border:2pt solid black;margin:60pt auto 0;width:400pt;border-collapse:collapse">
-          <tr><td style="padding:8pt 12pt;font-size:11pt;border-bottom:1pt solid #ddd"><b>Building name &nbsp;&nbsp;:</b>&nbsp;&nbsp;${building}</td></tr>
-          <tr><td style="padding:8pt 12pt;font-size:11pt;border-bottom:1pt solid #ddd"><b>Inspection type :</b>&nbsp;&nbsp;${type}</td></tr>
-          <tr><td style="padding:8pt 12pt;font-size:11pt"><b>Report date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;${dateFormatted}</td></tr>
-        </table>
-        <p style="font-size:8pt;border-top:1pt solid #888;padding-top:4pt;margin-top:40pt;display:flex;justify-content:space-between">
+        <p style="font-size:8pt;border-top:1pt solid black;padding:5pt 36pt;margin:0;display:flex;justify-content:space-between">
           <span>${building}</span><span>${type}</span><span>Page <b>1</b></span>
         </p>
       </div>
     `;
 
-    // Findings pages
     const chunks = [];
     for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
       chunks.push(state.rows.slice(i, i + ROWS_PER_PAGE));
@@ -2309,37 +2406,39 @@ async function downloadWord() {
     const totalPages = 1 + chunks.length;
 
     chunks.forEach((chunk, pi) => {
-      while (chunk.length < ROWS_PER_PAGE) chunk.push({ finding:'', beforeId:null, afterId:null, remarks:'' });
+      // Do NOT pad with empty rows on last page
       let rows = '';
       chunk.forEach(row => {
         const bImg = state.beforeImages.find(x => x.id === row.beforeId);
         const aImg = afterPool.find(x => x.id === row.afterId);
         rows += `<tr>
-          <td style="border:1pt solid #bbb;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:22%;word-wrap:break-word">${row.finding||''}</td>
-          <td style="border:1pt solid #bbb;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
+          <td style="border:2pt solid #000;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:22%;word-wrap:break-word">${row.finding||''}</td>
+          <td style="border:2pt solid #000;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
             ${bImg ? `<img src="${bImg.dataURL}" style="width:100%;height:110pt;object-fit:cover;display:block">` : ''}
           </td>
-          <td style="border:1pt solid #bbb;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
+          <td style="border:2pt solid #000;padding:0;vertical-align:middle;width:26%;height:110pt;overflow:hidden">
             ${aImg ? `<img src="${aImg.dataURL}" style="width:100%;height:110pt;object-fit:cover;display:block">` : ''}
           </td>
-          <td style="border:1pt solid #bbb;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:26%;word-wrap:break-word">${row.remarks||''}</td>
+          <td style="border:2pt solid #000;padding:4pt 6pt;vertical-align:middle;font-size:9pt;width:26%;word-wrap:break-word">${row.remarks||''}</td>
         </tr>`;
       });
 
       bodyHtml += `
-        <div style="font-family:Arial,sans-serif;${pi < chunks.length-1 ? 'page-break-after:always;':''}padding:28px 36px">
-          <p style="font-size:9pt;border-bottom:1pt solid black;padding-bottom:4pt;margin-bottom:8pt">Emirates Properties LLC</p>
-          <p style="font-size:10pt;font-weight:bold;margin-bottom:6pt">Inspection findings:</p>
-          <table style="width:100%;border-collapse:collapse;table-layout:fixed">
-            <tr>
-              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:22%">Findings</th>
-              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">Before Picture</th>
-              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">After Picture</th>
-              <th style="background:#000;color:#fff;border:1pt solid #000;padding:5pt 6pt;font-size:9pt;width:26%">Remarks</th>
-            </tr>
-            ${rows}
-          </table>
-          <p style="font-size:8pt;border-top:1pt solid #888;padding-top:4pt;margin-top:8pt">
+        <div style="font-family:Arial,sans-serif;${pi < chunks.length-1 ? 'page-break-after:always;':''}padding:0">
+          <p style="font-size:9pt;border-bottom:1pt solid black;padding:10pt 36pt 6pt;margin:0">Emirates Properties LLC</p>
+          <div style="padding:10pt 36pt">
+            <p style="font-size:10pt;font-weight:bold;margin:0 0 6pt 0">Inspection findings:</p>
+            <table style="width:100%;border-collapse:collapse;table-layout:fixed;border:2pt solid #000">
+              <tr>
+                <th style="background:#fff;color:#000;border:2pt solid #000;padding:6pt;font-size:9pt;width:22%;font-weight:bold">Findings</th>
+                <th style="background:#fff;color:#000;border:2pt solid #000;padding:6pt;font-size:9pt;width:26%;font-weight:bold">Before Picture</th>
+                <th style="background:#fff;color:#000;border:2pt solid #000;padding:6pt;font-size:9pt;width:26%;font-weight:bold">After Picture</th>
+                <th style="background:#fff;color:#000;border:2pt solid #000;padding:6pt;font-size:9pt;width:26%;font-weight:bold">Remarks</th>
+              </tr>
+              ${rows}
+            </table>
+          </div>
+          <p style="font-size:8pt;border-top:1pt solid black;padding:5pt 36pt;margin:0">
             <span style="float:left">${building}</span>
             <span style="margin:0 auto;display:block;text-align:center">${type}</span>
             <span style="float:right">Page <b>${pi+2}</b> of ${totalPages}</span>
@@ -2349,10 +2448,7 @@ async function downloadWord() {
     });
 
     const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-      <style>
-        @page { margin: 0; }
-        body { margin: 0; }
-      </style>
+      <style>@page { margin: 0; } body { margin: 0; }</style>
     </head><body>${bodyHtml}</body></html>`;
 
     const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword;charset=utf-8' });
@@ -2374,6 +2470,133 @@ async function downloadWord() {
 
   label.style.display = 'inline';
   loader.style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+//  LAYOUT EDITOR
+// ═══════════════════════════════════════════════
+let editorOpen = true;
+
+function toggleEditor() {
+  editorOpen = !editorOpen;
+  const ed = document.getElementById('layout-editor');
+  ed.style.display = editorOpen ? 'block' : 'none';
+}
+
+// Inject a <style> tag that overrides the report CSS with current slider values
+function applyLayout() {
+  const g = id => parseInt(document.getElementById(id).value);
+  const sv = (id, val) => { document.getElementById(id + '-val').textContent = val; };
+
+  const borderMargin  = g('le-border-margin');  sv('le-border-margin', borderMargin);
+  const hdrPt         = g('le-hdr-pt');          sv('le-hdr-pt', hdrPt);
+  const hdrPb         = g('le-hdr-pb');          sv('le-hdr-pb', hdrPb);
+  const titleTop      = g('le-title-top');        sv('le-title-top', titleTop);
+  const titleSize     = g('le-title-size');       sv('le-title-size', titleSize);
+  const infoboxMt     = g('le-infobox-mt');       sv('le-infobox-mt', infoboxMt);
+  const infoboxW      = g('le-infobox-w');        sv('le-infobox-w', infoboxW);
+  const infoboxFs     = g('le-infobox-fs');       sv('le-infobox-fs', infoboxFs);
+  const findingsPx    = g('le-findings-px');      sv('le-findings-px', findingsPx);
+  const findingsPt    = g('le-findings-pt');      sv('le-findings-pt', findingsPt);
+  const findingsGap   = g('le-findings-gap');     sv('le-findings-gap', findingsGap);
+  const rowH          = g('le-row-h');            sv('le-row-h', rowH);
+  const tableFs       = g('le-table-fs');         sv('le-table-fs', tableFs);
+  const hdrFs         = g('le-hdr-fs');           sv('le-hdr-fs', hdrFs);
+  const ftrFs         = g('le-ftr-fs');           sv('le-ftr-fs', ftrFs);
+
+  let el = document.getElementById('le-injected-style');
+  if (!el) { el = document.createElement('style'); el.id = 'le-injected-style'; document.head.appendChild(el); }
+
+  el.textContent = `
+    .report-cover-border {
+      margin: ${borderMargin}px ${borderMargin}px 0 ${borderMargin}px !important;
+    }
+    .report-cover-header-inside {
+      padding: ${hdrPt}px 16px ${hdrPb}px 16px !important;
+      font-size: ${hdrFs}px !important;
+    }
+    .report-cover-body {
+      padding-top: ${titleTop}px !important;
+    }
+    .report-main-title {
+      font-size: ${titleSize}px !important;
+    }
+    .report-info-box {
+      margin-top: ${infoboxMt}px !important;
+      width: ${infoboxW}px !important;
+      font-size: ${infoboxFs}px !important;
+    }
+    .report-findings-body {
+      padding: ${findingsPt}px ${findingsPx}px 10px ${findingsPx}px !important;
+    }
+    .report-findings-title {
+      margin: 0 0 ${findingsGap}px 0 !important;
+    }
+    .report-table tbody tr td {
+      height: ${rowH}px !important;
+    }
+    .report-img {
+      height: ${rowH}px !important;
+    }
+    .report-table {
+      font-size: ${tableFs}px !important;
+    }
+    .report-table thead tr th {
+      font-size: ${tableFs}px !important;
+    }
+    .report-table td.td-finding,
+    .report-table td.td-remarks {
+      font-size: ${tableFs}px !important;
+    }
+    .report-page-header {
+      font-size: ${hdrFs}px !important;
+    }
+    .report-page-footer {
+      font-size: ${ftrFs}px !important;
+    }
+  `;
+}
+
+function resetLayout() {
+  const defaults = {
+    'le-border-margin': 8,
+    'le-hdr-pt': 10,
+    'le-hdr-pb': 8,
+    'le-title-top': 110,
+    'le-title-size': 38,
+    'le-infobox-mt': 52,
+    'le-infobox-w': 380,
+    'le-infobox-fs': 13,
+    'le-findings-px': 20,
+    'le-findings-pt': 20,
+    'le-findings-gap': 16,
+    'le-row-h': 190,
+    'le-table-fs': 10,
+    'le-hdr-fs': 9,
+    'le-ftr-fs': 9
+  };
+  Object.entries(defaults).forEach(([id, val]) => {
+    document.getElementById(id).value = val;
+  });
+  applyLayout();
+}
+
+function copyLayoutCode() {
+  const g = id => parseInt(document.getElementById(id).value);
+  const vals = {
+    borderMargin: g('le-border-margin'),
+    hdrPt: g('le-hdr-pt'), hdrPb: g('le-hdr-pb'),
+    titleTop: g('le-title-top'), titleSize: g('le-title-size'),
+    infoboxMt: g('le-infobox-mt'), infoboxW: g('le-infobox-w'), infoboxFs: g('le-infobox-fs'),
+    findingsPx: g('le-findings-px'), findingsPt: g('le-findings-pt'),
+    findingsGap: g('le-findings-gap'), rowH: g('le-row-h'),
+    tableFs: g('le-table-fs'), hdrFs: g('le-hdr-fs'), ftrFs: g('le-ftr-fs')
+  };
+  navigator.clipboard.writeText(JSON.stringify(vals, null, 2)).then(() => {
+    const n = document.getElementById('le-copy-notice');
+    n.style.display = 'block';
+    setTimeout(() => { n.style.display = 'none'; }, 2500);
+  });
 }
 </script>
 </body>
