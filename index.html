@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maintenance Inspection Report</title>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
 <!-- PDF Generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -50,81 +46,8 @@
     line-height: 1.5;
   }
 
-  /* ── AUTH SCREEN ── */
-  #auth-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0f2c54 0%, #1b4f8a 60%, #2563a8 100%);
-  }
-
-  .auth-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 52px 44px;
-    max-width: 420px;
-    width: 90%;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .auth-logo {
-    width: 64px; height: 64px;
-    background: var(--accent);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 28px;
-  }
-
-  .auth-card h1 {
-    font-family: var(--font-head);
-    font-size: 22px;
-    color: var(--ink);
-    margin-bottom: 6px;
-  }
-
-  .auth-card p {
-    color: var(--ink-soft);
-    font-size: 13.5px;
-    margin-bottom: 32px;
-    line-height: 1.6;
-  }
-
-  .btn-google {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    padding: 13px 20px;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 8px;
-    background: var(--white);
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s;
-    text-decoration: none;
-  }
-  .btn-google:hover { background: var(--paper); border-color: var(--accent); }
-  .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-  .auth-error {
-    margin-top: 16px;
-    padding: 12px 16px;
-    background: var(--danger-light);
-    border: 1px solid #f5c6c2;
-    border-radius: 8px;
-    color: var(--danger);
-    font-size: 13px;
-    display: none;
-  }
-
   /* ── APP SHELL ── */
-  #app { display: none; }
+  #app { display: block; }
 
   .top-bar {
     background: var(--white);
@@ -161,35 +84,9 @@
 
   .top-bar-right {
     display: flex; align-items: center; gap: 12px;
-  }
-
-  .user-chip {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 12px;
-    background: var(--accent-light);
-    border-radius: 20px;
     font-size: 13px;
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .user-chip img {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .btn-signout {
-    padding: 6px 14px;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 7px;
-    background: white;
     color: var(--ink-soft);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
   }
-  .btn-signout:hover { border-color: var(--danger); color: var(--danger); }
 
   /* ── MAIN CONTENT ── */
   .main-content {
@@ -422,6 +319,7 @@
   }
   .pool-thumb:hover { border-color: var(--accent); transform: scale(1.05); }
   .pool-thumb.dragging { opacity: 0.4; }
+  .pool-thumb.drag-over-thumb { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(27,79,138,0.18); transform: scale(1.05); }
   .pool-thumb.used { opacity: 0.35; filter: grayscale(1); }
 
   /* ── FINDINGS TABLE ── */
@@ -802,7 +700,7 @@
     padding: 6px 8px;
     vertical-align: middle;
     text-align: center;
-    height: 158px;      /* fixed row height — 5 rows fill the page */
+    height: 158px;      /* fixed row height */
     overflow: hidden;
   }
 
@@ -832,7 +730,7 @@
     overflow: hidden;
   }
 
-  /* ── STEP 4 per-row after-photo slots ── */
+  /* ── per-row after-photo slots ── */
   .s4-slot {
     width: 90px;
     height: 70px;
@@ -895,7 +793,6 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
-    .auth-card { padding: 36px 24px; }
     .home-actions { flex-direction: column; align-items: center; }
     .top-bar-title { display: none; }
     .findings-table { font-size: 12px; }
@@ -923,25 +820,6 @@
 </head>
 <body>
 
-<!-- ═══ AUTH SCREEN ═══ -->
-<div id="auth-screen">
-  <div class="auth-card">
-    <div class="auth-logo">📋</div>
-    <h1>Inspection Report Portal</h1>
-    <p>Emirates Properties LLC — secure access for authorised personnel only. Sign in with your approved Google account.</p>
-    <button class="btn-google" id="btn-signin">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Sign in with Google
-    </button>
-    <div class="auth-error" id="auth-error"></div>
-  </div>
-</div>
-
 <!-- ═══ APP ═══ -->
 <div id="app">
   <div class="top-bar">
@@ -950,11 +828,7 @@
       <span class="top-bar-title">Inspection Report Portal</span>
     </div>
     <div class="top-bar-right">
-      <div class="user-chip">
-        <img id="user-photo" src="" alt="avatar" onerror="this.style.display='none'">
-        <span id="user-name"></span>
-      </div>
-      <button class="btn-signout" onclick="signOut()">Sign out</button>
+      <span>Emirates Properties LLC</span>
     </div>
   </div>
 
@@ -975,7 +849,7 @@
         <div class="action-card" onclick="startUpdateReport()">
           <div class="icon">✏️</div>
           <h3>Update Report</h3>
-          <p>Upload an existing report and add after pictures and updated remarks</p>
+          <p>Load an existing report's data and add / replace after pictures and remarks</p>
         </div>
       </div>
     </div>
@@ -1104,6 +978,9 @@
         <input type="file" id="before-files" accept="image/*" multiple style="display:none" onchange="handleBeforeFiles(event)">
 
         <div class="image-pool" id="before-pool"></div>
+        <p style="font-size:12px;color:var(--ink-soft);margin-top:8px">
+          ↕ Drag a photo onto another to reorder — this sets the row order in the findings table.
+        </p>
 
         <div id="before-count-notice" style="display:none;margin-top:12px">
           <span class="badge badge-blue" id="before-count-badge"></span>
@@ -1194,7 +1071,7 @@
           <p><strong>Click to select all after photos</strong> or drag & drop here</p>
           <p style="margin-top:4px;font-size:12px">Select multiple files · JPG, PNG, WEBP · they auto-fill rows in order</p>
         </div>
-        <input type="file" id="after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFiles(event)">
+        <input type="file" id="after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFilesBulk(event,'step4')">
       </div>
 
       <!-- Per-row table -->
@@ -1236,37 +1113,75 @@
         <h2>Update Existing Report</h2>
       </div>
 
-      <div class="notice notice-gold">✏️ Upload after-condition photos and drag them into the slots. Edit remarks as needed, then re-generate the updated report.</div>
+      <div class="notice notice-gold">✏️ Load an existing report's data below, then upload or replace after-condition photos for each finding row.</div>
 
-      <div class="card">
-        <div class="card-title">⬆️ Upload New After Photos</div>
-        <div class="upload-zone" id="update-after-dropzone" onclick="document.getElementById('update-after-files').click()" ondragover="handleDragOver(event,'update-after-dropzone')" ondragleave="handleDragLeave('update-after-dropzone')" ondrop="handleDrop(event,'update-after')">
-          <div class="upload-icon">📁</div>
-          <p><strong>Click or drag</strong> to upload after-condition photos</p>
+      <div class="card" id="update-load-card">
+        <div class="card-title">📂 Load Report Data</div>
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px">
+          If you generated a report earlier in this session, it's already loaded below. Otherwise, import a previously exported <strong>.json</strong> report data file (download it from the "💾 Export Data" button when you generate a report).
+        </p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="document.getElementById('import-report-json').click()">📂 Import Report Data (.json)</button>
+          <input type="file" id="import-report-json" accept=".json" style="display:none" onchange="importReportData(event)">
+          <span id="update-load-status" style="font-size:13px;color:var(--ink-soft)"></span>
         </div>
-        <input type="file" id="update-after-files" accept="image/*" multiple style="display:none" onchange="handleUpdateAfterFiles(event)">
-        <div class="image-pool" id="update-after-pool" style="margin-top:16px"></div>
       </div>
 
-      <div class="card" style="overflow-x:auto" id="update-findings-card" style="display:none">
-        <div class="card-title">📋 Update Findings Table</div>
-        <table class="findings-table" id="update-table">
+      <div class="card" id="update-summary-card" style="display:none">
+        <div class="card-title">🏢 Report Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Building Name</label>
+            <input type="text" class="form-control" id="update-building" oninput="state.building=this.value">
+          </div>
+          <div class="form-group">
+            <label>Inspection Type</label>
+            <input type="text" class="form-control" id="update-type" oninput="state.inspectionType=this.value">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Report Date</label>
+            <input type="date" class="form-control" id="update-date" oninput="state.reportDate=this.value">
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="update-upload-card" style="display:none">
+        <div class="card-title">📸 After Condition Photos</div>
+        <div class="notice notice-info" style="margin-bottom:14px">
+          ℹ️ <strong>Bulk upload:</strong> select all after photos — they auto-fill empty rows in order. Use <strong>📷 / 📁</strong> on each row to replace an individual photo, or drag photos between rows to reorder.
+        </div>
+        <div class="upload-zone" id="update-after-dropzone"
+             onclick="document.getElementById('update-after-files').click()"
+             ondragover="handleDragOver(event,'update-after-dropzone')"
+             ondragleave="handleDragLeave('update-after-dropzone')"
+             ondrop="handleDrop(event,'update-after')">
+          <div class="upload-icon">📁</div>
+          <p><strong>Click to select after photos</strong> or drag & drop here</p>
+        </div>
+        <input type="file" id="update-after-files" accept="image/*" multiple style="display:none" onchange="handleAfterFilesBulk(event,'update')">
+      </div>
+
+      <div class="card" style="overflow-x:auto;display:none" id="update-findings-card">
+        <div class="card-title">📋 After Photos per Row</div>
+        <table class="findings-table" id="findings-table-update">
           <thead>
             <tr>
-              <th>#</th>
+              <th style="width:32px">#</th>
               <th>Findings</th>
-              <th>Before Picture</th>
-              <th>After Picture (Drop Here)</th>
-              <th>Remarks</th>
+              <th class="td-before-img">Before Picture</th>
+              <th class="td-after-img">After Picture</th>
+              <th style="width:90px">Actions</th>
             </tr>
           </thead>
-          <tbody id="update-tbody"></tbody>
+          <tbody id="findings-tbody-update"></tbody>
         </table>
       </div>
 
       <div class="btn-row" id="update-actions" style="display:none">
         <div class="spacer"></div>
-        <button class="btn btn-success" onclick="generateReport(true)">🔨 Generate Updated Report</button>
+        <button class="btn btn-success" onclick="generateReport()">🔨 Generate Updated Report</button>
       </div>
     </div>
 
@@ -1292,33 +1207,13 @@
         <span id="dl-word-label">⬇️ Download Word</span>
         <span id="dl-word-loader" style="display:none"><span class="loader"></span></span>
       </button>
+      <button class="btn btn-secondary" onclick="exportReportData()">💾 Export Data (.json)</button>
       <button class="btn btn-secondary" onclick="closePreview()">Close</button>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  CONFIGURATION — EDIT THESE VALUES
-// ═══════════════════════════════════════════════
-
-const FIREBASE_CONFIG = {
-  // STEP 1: Go to https://console.firebase.google.com
-  // Create a project → Add web app → Copy config here
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
-// STEP 2: Add BOTH allowed Gmail addresses here (yours + the other person)
-const ALLOWED_EMAILS = [
-  "your.email@gmail.com",
-  "colleague.email@gmail.com"
-];
-
 // ═══════════════════════════════════════════════
 //  PREDEFINED FINDINGS (add/edit as needed)
 // ═══════════════════════════════════════════════
@@ -1366,73 +1261,28 @@ let state = {
   beforeImages: [],   // {id, name, dataURL}
   afterImages: [],    // {id, name, dataURL}
   rows: [],           // {finding, beforeId, afterId, remarks}
-  isUpdateMode: false,
-  updateAfterImages: []
+  isUpdateMode: false
 };
 
-
-
 // ═══════════════════════════════════════════════
-//  FIREBASE INIT & AUTH
+//  APP INIT (no authentication — direct access)
 // ═══════════════════════════════════════════════
-let auth;
+initApp();
 
-// Demo mode if no Firebase config
-const IS_DEMO = FIREBASE_CONFIG.apiKey === "YOUR_API_KEY";
+function initApp() {
+  const today = new Date().toISOString().split('T')[0];
+  const d = document.getElementById('inp-date');
+  if (d) d.value = today;
+  loadBuildingNames();
+  showView('view-home');
+}
 
-if (!IS_DEMO) {
-  firebase.initializeApp(FIREBASE_CONFIG);
-  auth = firebase.auth();
-
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      if (!ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
-        auth.signOut();
-        showAuthError("Access denied. Your account (" + user.email + ") is not authorised.");
-        return;
-      }
-      showApp(user);
-    } else {
-      showAuthScreen();
-    }
-  });
-
-  document.getElementById('btn-signin').onclick = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-      showAuthError(err.message);
-    });
+function resetState() {
+  state = {
+    building: '', inspectionType: '', reportDate: '',
+    beforeImages: [], afterImages: [], rows: [],
+    isUpdateMode: false
   };
-} else {
-  // DEMO MODE — skip auth for testing
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('user-name').textContent = 'Demo User';
-  initApp();
-}
-
-function showApp(user) {
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('user-name').textContent = user.displayName || user.email;
-  if (user.photoURL) document.getElementById('user-photo').src = user.photoURL;
-  initApp();
-}
-
-function showAuthScreen() {
-  document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-}
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function signOut() {
-  if (IS_DEMO) return;
-  auth.signOut();
 }
 
 // ═══════════════════════════════════════════════
@@ -1448,23 +1298,6 @@ function showView(id) {
 
 function goHome() { showView('view-home'); resetState(); }
 
-function initApp() {
-  // Set default date
-  const today = new Date().toISOString().split('T')[0];
-  const d = document.getElementById('inp-date');
-  if (d) d.value = today;
-  loadBuildingNames();
-  showView('view-home');
-}
-
-function resetState() {
-  state = {
-    building: '', inspectionType: '', reportDate: '',
-    beforeImages: [], afterImages: [], rows: [],
-    isUpdateMode: false, updateAfterImages: []
-  };
-}
-
 // ═══════════════════════════════════════════════
 //  STEP NAVIGATION
 // ═══════════════════════════════════════════════
@@ -1477,17 +1310,74 @@ function startNewReport() {
 
 function startUpdateReport() {
   state.isUpdateMode = true;
-  // For demo/update mode: we pre-populate with sample rows
-  // In real use, the "before" data is already in state from a previous session
-  // We'll show the update view which lets them add after photos & edit remarks
-  if (state.rows.length === 0) {
-    alert("Please first generate a report in this session. Then use Update Report to add after photos. (In production, data would persist via Firebase.)");
-    return;
+  showView('view-update');
+  document.getElementById('import-report-json').value = '';
+  if (state.rows.length > 0) {
+    document.getElementById('update-load-status').textContent = `✓ Using data from current session: ${state.rows.length} row(s) loaded.`;
+    revealUpdateSections();
+  } else {
+    document.getElementById('update-load-status').textContent = 'No report data loaded yet — import a .json file above.';
+    document.getElementById('update-summary-card').style.display = 'none';
+    document.getElementById('update-upload-card').style.display = 'none';
+    document.getElementById('update-findings-card').style.display = 'none';
+    document.getElementById('update-actions').style.display = 'none';
   }
+}
+
+function revealUpdateSections() {
+  document.getElementById('update-building').value = state.building || '';
+  document.getElementById('update-type').value = state.inspectionType || '';
+  document.getElementById('update-date').value = state.reportDate || '';
+  document.getElementById('update-summary-card').style.display = 'block';
+  document.getElementById('update-upload-card').style.display = 'block';
   document.getElementById('update-findings-card').style.display = 'block';
   document.getElementById('update-actions').style.display = 'flex';
-  buildUpdateTable();
-  showView('view-update');
+  buildUpdatePhotoTable();
+}
+
+function importReportData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.rows || !data.beforeImages) throw new Error('This file does not look like exported report data.');
+      state.building = data.building || '';
+      state.inspectionType = data.inspectionType || '';
+      state.reportDate = data.reportDate || '';
+      state.beforeImages = data.beforeImages || [];
+      state.afterImages = data.afterImages || [];
+      state.rows = data.rows || [];
+      document.getElementById('update-load-status').textContent = `✓ Imported: ${state.rows.length} row(s) loaded from file.`;
+      revealUpdateSections();
+    } catch (err) {
+      alert('Could not read report data file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportReportData() {
+  const data = {
+    building: state.building,
+    inspectionType: state.inspectionType,
+    reportDate: state.reportDate,
+    beforeImages: state.beforeImages,
+    afterImages: state.afterImages,
+    rows: state.rows
+  };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeBuilding = (state.building || 'report').replace(/[^a-zA-Z0-9_\- ]/g, '').replace(/\s+/g, '_');
+  a.href = url;
+  a.download = `${safeBuilding}_${state.reportDate || 'draft'}_data.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function handleTypeChange() {
@@ -1516,6 +1406,7 @@ function goToStep2() {
 // ── Building name typeahead ──
 let buildingNames = [];
 let buildingSuggestionIndex = -1;
+let buildingCurrentMatches = [];
 
 function loadBuildingNames() {
   try { buildingNames = JSON.parse(localStorage.getItem('buildingNames') || '[]'); } catch(e) { buildingNames = []; }
@@ -1527,18 +1418,19 @@ function saveBuildingNames() {
 
 function buildingSuggest(query) {
   const ul = document.getElementById('building-suggestions');
-  query = query.trim();
+  query = (query || '').trim();
   const matches = query.length === 0
-    ? buildingNames
+    ? buildingNames.slice()
     : buildingNames.filter(n => n.toLowerCase().includes(query.toLowerCase()));
 
-  if (matches.length === 0) { ul.style.display = 'none'; return; }
-
+  buildingCurrentMatches = matches;
   buildingSuggestionIndex = -1;
+
+  if (matches.length === 0) { ul.innerHTML = ''; ul.style.display = 'none'; return; }
+
   ul.innerHTML = '';
   matches.forEach((name, i) => {
     const li = document.createElement('li');
-    // Highlight matched portion
     const idx = name.toLowerCase().indexOf(query.toLowerCase());
     li.innerHTML = idx >= 0 && query
       ? name.slice(0, idx) + '<strong>' + name.slice(idx, idx + query.length) + '</strong>' + name.slice(idx + query.length)
@@ -1573,12 +1465,8 @@ function buildingKeydown(e) {
     highlightSuggestion(buildingSuggestionIndex);
   } else if (e.key === 'Enter') {
     e.preventDefault();
-    if (buildingSuggestionIndex >= 0 && items[buildingSuggestionIndex]) {
-      const name = buildingNames.filter(n => {
-        const q = document.getElementById('inp-building').value.trim();
-        return q.length === 0 ? true : n.toLowerCase().includes(q.toLowerCase());
-      })[buildingSuggestionIndex];
-      if (name) selectBuilding(name);
+    if (buildingSuggestionIndex >= 0 && buildingCurrentMatches[buildingSuggestionIndex]) {
+      selectBuilding(buildingCurrentMatches[buildingSuggestionIndex]);
     }
   } else if (e.key === 'Escape') {
     ul.style.display = 'none';
@@ -1606,13 +1494,19 @@ function importBuildingNames(event) {
   reader.onload = function(e) {
     const lines = e.target.result.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let added = 0;
-    lines.forEach(n => { if (!buildingNames.includes(n)) { buildingNames.push(n); added++; } });
+    lines.forEach(n => {
+      const exists = buildingNames.some(existing => existing.toLowerCase() === n.toLowerCase());
+      if (!exists) { buildingNames.push(n); added++; }
+    });
     saveBuildingNames();
     const notice = document.getElementById('building-import-notice');
     notice.textContent = `✓ Imported ${lines.length} building name(s) (${added} new). Start typing to search.`;
     notice.style.display = 'block';
     setTimeout(() => { notice.style.display = 'none'; }, 4000);
-    document.getElementById('inp-building').focus();
+
+    const input = document.getElementById('inp-building');
+    input.focus();
+    buildingSuggest(input.value); // show the dropdown right away, don't rely solely on the focus event
   };
   reader.readAsText(file);
   event.target.value = '';
@@ -1628,7 +1522,6 @@ function goToStep3() {
 }
 
 function goToStep4() {
-  // Save current findings from table
   saveFindings();
   buildStep4Table();
   showView('view-step4');
@@ -1657,41 +1550,25 @@ async function handleBeforeFiles(event) {
   event.target.value = '';
 }
 
-async function handleAfterFiles(event) {
+// Generic bulk "after photo" handler — used by Step 4 and Update views alike.
+// prefix is 'step4' or 'update' and controls which table gets rebuilt.
+async function handleAfterFilesBulk(event, prefix) {
   const files = Array.from(event.target.files);
-  // Read all files
   const newImgs = [];
-  for (const f of files) {
-    newImgs.push(await readFile(f));
-  }
-  // Auto-assign sequentially starting from first unassigned row
+  for (const f of files) newImgs.push(await readFile(f));
+
   let rowCursor = 0;
   for (const img of newImgs) {
-    // Find next row without an after image
     while (rowCursor < state.rows.length && state.rows[rowCursor].afterId !== null) rowCursor++;
     if (rowCursor < state.rows.length) {
       state.afterImages.push(img);
       state.rows[rowCursor].afterId = img.id;
       rowCursor++;
     } else {
-      // All rows filled — still store the image
       state.afterImages.push(img);
     }
   }
-  buildStep4Table();
-  event.target.value = '';
-}
-
-async function handleUpdateAfterFiles(event) {
-  const files = Array.from(event.target.files);
-  for (const f of files) {
-    const img = await readFile(f);
-    state.updateAfterImages.push(img);
-  }
-  renderUpdateAfterPool();
-  document.getElementById('update-findings-card').style.display = 'block';
-  document.getElementById('update-actions').style.display = 'flex';
-  buildUpdateTable();
+  rebuildPhotoTable(prefix);
   event.target.value = '';
 }
 
@@ -1711,12 +1588,13 @@ async function handleDrop(e, type) {
   document.getElementById(zoneMap[type]).classList.remove('dragover');
 
   const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+
   if (type === 'before') {
     for (const f of files) { state.beforeImages.push(await readFile(f)); }
     renderBeforePool();
     document.getElementById('before-count-notice').style.display = 'block';
     document.getElementById('before-count-badge').textContent = state.beforeImages.length + ' photo(s) ready';
-  } else if (type === 'after') {
+  } else if (type === 'after' || type === 'update-after') {
     const newImgs = [];
     for (const f of files) { newImgs.push(await readFile(f)); }
     let rowCursor = 0;
@@ -1730,13 +1608,7 @@ async function handleDrop(e, type) {
         state.afterImages.push(img);
       }
     }
-    buildStep4Table();
-  } else if (type === 'update-after') {
-    for (const f of files) { state.updateAfterImages.push(await readFile(f)); }
-    renderUpdateAfterPool();
-    document.getElementById('update-findings-card').style.display = 'block';
-    document.getElementById('update-actions').style.display = 'flex';
-    buildUpdateTable();
+    rebuildPhotoTable(type === 'after' ? 'step4' : 'update');
   }
 }
 
@@ -1750,41 +1622,56 @@ function renderBeforePool() {
     const el = document.createElement('img');
     el.className = 'pool-thumb';
     el.src = img.dataURL;
-    el.title = img.name;
+    el.title = img.name + ' — drag to reorder';
+    el.draggable = true;
+    el.dataset.idx = i;
+    el.addEventListener('dragstart', beforeDragStart);
+    el.addEventListener('dragover', beforeDragOver);
+    el.addEventListener('dragleave', beforeDragLeave);
+    el.addEventListener('drop', beforeDrop);
+    el.addEventListener('dragend', beforeDragEnd);
     pool.appendChild(el);
   });
 }
 
-function renderAfterPool() {
-  const pool = document.getElementById('after-pool');
-  pool.innerHTML = '';
-  state.afterImages.forEach((img, i) => {
-    const el = document.createElement('img');
-    el.className = 'pool-thumb';
-    el.src = img.dataURL;
-    el.title = img.name;
-    el.draggable = true;
-    el.dataset.imgId = img.id;
-    el.dataset.source = 'after';
-    el.addEventListener('dragstart', onThumbDragStart);
-    pool.appendChild(el);
-  });
+// ── Drag-to-reorder for Before photos (order here = row order later) ──
+let beforeDragFromIdx = null;
+
+function beforeDragStart(e) {
+  beforeDragFromIdx = parseInt(e.currentTarget.dataset.idx);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(beforeDragFromIdx));
+  e.currentTarget.classList.add('dragging');
 }
 
-function renderUpdateAfterPool() {
-  const pool = document.getElementById('update-after-pool');
-  pool.innerHTML = '';
-  state.updateAfterImages.forEach((img) => {
-    const el = document.createElement('img');
-    el.className = 'pool-thumb';
-    el.src = img.dataURL;
-    el.title = img.name;
-    el.draggable = true;
-    el.dataset.imgId = img.id;
-    el.dataset.source = 'update-after';
-    el.addEventListener('dragstart', onThumbDragStart);
-    pool.appendChild(el);
-  });
+function beforeDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const toIdx = parseInt(e.currentTarget.dataset.idx);
+  if (beforeDragFromIdx !== null && beforeDragFromIdx !== toIdx) {
+    e.currentTarget.classList.add('drag-over-thumb');
+  }
+}
+
+function beforeDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over-thumb');
+}
+
+function beforeDrop(e) {
+  e.preventDefault();
+  const toIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.classList.remove('drag-over-thumb');
+  if (beforeDragFromIdx === null || beforeDragFromIdx === toIdx) { beforeDragFromIdx = null; return; }
+
+  const moved = state.beforeImages.splice(beforeDragFromIdx, 1)[0];
+  state.beforeImages.splice(toIdx, 0, moved);
+  beforeDragFromIdx = null;
+  renderBeforePool();
+}
+
+function beforeDragEnd() {
+  document.querySelectorAll('.pool-thumb').forEach(el => el.classList.remove('dragging', 'drag-over-thumb'));
+  beforeDragFromIdx = null;
 }
 
 // ═══════════════════════════════════════════════
@@ -1852,11 +1739,9 @@ function saveCustomFinding(i, el) {
   state.rows[i].finding = el.value;
 }
 
-function saveRowFinding(i, el) { state.rows[i].finding = el.value; }
 function saveRowRemarks(i, el) { state.rows[i].remarks = el.value; }
 
 function saveFindings() {
-  // Read current table values — handle both dropdown and custom input
   document.querySelectorAll('.findings-select[data-row]').forEach(el => {
     const i = parseInt(el.dataset.row);
     if (!state.rows[i]) return;
@@ -1874,17 +1759,27 @@ function saveFindings() {
 }
 
 // ═══════════════════════════════════════════════
-//  STEP 4 TABLE — per-row with drag-between-slots, camera, file
+//  AFTER-PHOTO ASSIGNMENT TABLE
+//  Shared by Step 4 (new report) and Update Report — parameterised by
+//  tbody id + a slot-id prefix so both tables can coexist independently.
 // ═══════════════════════════════════════════════
-let s4DragFromRow = null; // row index being dragged FROM
+function buildStep4Table() { buildPhotoTable('findings-tbody-step4', 'step4'); }
+function buildUpdatePhotoTable() { buildPhotoTable('findings-tbody-update', 'update'); }
 
-function buildStep4Table() {
-  const tbody = document.getElementById('findings-tbody-step4');
+function rebuildPhotoTable(prefix) {
+  if (prefix === 'step4') buildStep4Table();
+  else if (prefix === 'update') buildUpdatePhotoTable();
+}
+
+function buildPhotoTable(tbodyId, prefix) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
   tbody.innerHTML = '';
 
   state.rows.forEach((row, i) => {
     const bImg = state.beforeImages.find(x => x.id === row.beforeId);
     const aImg = state.afterImages.find(x => x.id === row.afterId);
+    const slotId = `${prefix}-slot-${i}`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -1895,14 +1790,14 @@ function buildStep4Table() {
       </td>
       <td class="td-after-img" style="padding:4px">
         <div class="s4-slot ${aImg ? 's4-slot-filled' : ''}"
-             id="s4slot-${i}"
+             id="${slotId}"
              draggable="${aImg ? 'true' : 'false'}"
-             ondragstart="s4DragStart(event,${i})"
-             ondragover="s4DragOver(event,${i})"
-             ondragleave="s4DragLeave(event,${i})"
-             ondrop="s4Drop(event,${i})">
+             ondragstart="s4DragStart(event,${i},'${prefix}')"
+             ondragover="s4DragOver(event,${i},'${prefix}')"
+             ondragleave="s4DragLeave(event,${i},'${prefix}')"
+             ondrop="s4Drop(event,${i},'${prefix}')">
           ${aImg
-            ? `<img src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block">
+            ? `<img src="${aImg.dataURL}" draggable="false" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;pointer-events:none">
                <div class="s4-slot-overlay">↕ Drag to swap</div>`
             : `<span style="font-size:22px">📷</span>
                <span style="font-size:10px;margin-top:2px">No photo yet</span>`}
@@ -1911,15 +1806,15 @@ function buildStep4Table() {
       <td style="vertical-align:middle;text-align:center;padding:6px">
         <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
           <button class="btn btn-secondary btn-sm" title="Take photo (mobile) or pick file"
-                  onclick="s4CameraOrFile(${i})" style="width:70px;font-size:12px;padding:6px 0">
+                  onclick="s4CameraOrFile(${i},'${prefix}')" style="width:70px;font-size:12px;padding:6px 0">
             📷 Photo
           </button>
           <button class="btn btn-secondary btn-sm" title="Pick file from device"
-                  onclick="s4PickFile(${i})" style="width:70px;font-size:12px;padding:6px 0">
+                  onclick="s4PickFile(${i},'${prefix}')" style="width:70px;font-size:12px;padding:6px 0">
             📁 File
           </button>
           ${aImg ? `<button class="btn btn-sm" title="Remove photo"
-                  onclick="s4Remove(${i})" style="width:70px;font-size:11px;padding:5px 0;background:#fdecea;color:#c0392b;border:1px solid #f5c6c2">
+                  onclick="s4Remove(${i},'${prefix}')" style="width:70px;font-size:11px;padding:5px 0;background:#fdecea;color:#c0392b;border:1px solid #f5c6c2">
             ✕ Clear
           </button>` : ''}
         </div>
@@ -1930,144 +1825,96 @@ function buildStep4Table() {
 }
 
 // ── Per-slot drag (swap between rows) ──
-function s4DragStart(e, fromRow) {
+let s4DragFromRow = null;
+
+function s4DragStart(e, fromRow, prefix) {
   s4DragFromRow = fromRow;
   e.dataTransfer.setData('text/plain', String(fromRow));
   e.dataTransfer.effectAllowed = 'move';
   setTimeout(() => {
-    const el = document.getElementById(`s4slot-${fromRow}`);
+    const el = document.getElementById(`${prefix}-slot-${fromRow}`);
     if (el) el.style.opacity = '0.4';
   }, 0);
 }
 
-function s4DragOver(e, toRow) {
+function s4DragOver(e, toRow, prefix) {
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  const el = document.getElementById(`s4slot-${toRow}`);
+  const el = document.getElementById(`${prefix}-slot-${toRow}`);
   if (el && s4DragFromRow !== toRow) el.classList.add('drag-over');
 }
 
-function s4DragLeave(e, toRow) {
-  const el = document.getElementById(`s4slot-${toRow}`);
+function s4DragLeave(e, toRow, prefix) {
+  const el = document.getElementById(`${prefix}-slot-${toRow}`);
   if (el) el.classList.remove('drag-over');
 }
 
-function s4Drop(e, toRow) {
+function s4Drop(e, toRow, prefix) {
   e.preventDefault();
   const fromRow = parseInt(e.dataTransfer.getData('text/plain'));
-  const fromSlot = document.getElementById(`s4slot-${fromRow}`);
-  const toSlot   = document.getElementById(`s4slot-${toRow}`);
+  const fromSlot = document.getElementById(`${prefix}-slot-${fromRow}`);
+  const toSlot   = document.getElementById(`${prefix}-slot-${toRow}`);
   if (fromSlot) fromSlot.style.opacity = '';
   if (toSlot) toSlot.classList.remove('drag-over');
   if (fromRow === toRow) return;
 
-  // Swap afterId between rows
   const tmp = state.rows[fromRow].afterId;
   state.rows[fromRow].afterId = state.rows[toRow].afterId;
   state.rows[toRow].afterId = tmp;
   s4DragFromRow = null;
-  buildStep4Table();
+  rebuildPhotoTable(prefix);
 }
 
 // ── Per-row camera (capture=environment triggers camera on mobile) ──
-function s4CameraOrFile(rowIdx) {
+function s4CameraOrFile(rowIdx, prefix) {
   const inp = document.createElement('input');
   inp.type = 'file';
   inp.accept = 'image/*';
-  inp.capture = 'environment'; // opens camera on mobile
+  inp.capture = 'environment';
   inp.onchange = async (e) => {
     if (!e.target.files[0]) return;
-    await s4AssignFile(rowIdx, e.target.files[0]);
+    await s4AssignFile(rowIdx, e.target.files[0], prefix);
   };
   inp.click();
 }
 
 // ── Per-row file picker (no camera) ──
-function s4PickFile(rowIdx) {
+function s4PickFile(rowIdx, prefix) {
   const inp = document.createElement('input');
   inp.type = 'file';
   inp.accept = 'image/*';
   inp.onchange = async (e) => {
     if (!e.target.files[0]) return;
-    await s4AssignFile(rowIdx, e.target.files[0]);
+    await s4AssignFile(rowIdx, e.target.files[0], prefix);
   };
   inp.click();
 }
 
-async function s4AssignFile(rowIdx, file) {
+async function s4AssignFile(rowIdx, file, prefix) {
   const img = await readFile(file);
-  // Replace existing afterId in pool if present
   if (state.rows[rowIdx].afterId !== null) {
     const oldIdx = state.afterImages.findIndex(x => x.id === state.rows[rowIdx].afterId);
     if (oldIdx >= 0) state.afterImages.splice(oldIdx, 1);
   }
   state.afterImages.push(img);
   state.rows[rowIdx].afterId = img.id;
-  buildStep4Table();
+  rebuildPhotoTable(prefix);
 }
 
-function s4Remove(rowIdx) {
+function s4Remove(rowIdx, prefix) {
   const oldId = state.rows[rowIdx].afterId;
   if (oldId !== null) {
     const oldIdx = state.afterImages.findIndex(x => x.id === oldId);
     if (oldIdx >= 0) state.afterImages.splice(oldIdx, 1);
   }
   state.rows[rowIdx].afterId = null;
-  buildStep4Table();
-}
-
-// ═══════════════════════════════════════════════
-//  UPDATE TABLE
-// ═══════════════════════════════════════════════
-function buildUpdateTable() {
-  const tbody = document.getElementById('update-tbody');
-  tbody.innerHTML = '';
-
-  state.rows.forEach((row, i) => {
-    const bImg = state.beforeImages.find(x => x.id === row.beforeId);
-    const aImg = state.updateAfterImages.find(x => x.id === row.afterId);
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><span class="row-num">${i+1}</span></td>
-      <td style="font-size:12.5px">
-        <select class="findings-select" data-row="${i}" onchange="handleFindingChange(${i},this)">
-          <option value="">— Select finding —</option>
-          ${FINDINGS_OPTIONS.map(o => `<option value="${o}" ${row.finding===o?'selected':''}>${o}</option>`).join('')}
-        </select>
-        <input type="text"
-               id="finding-custom-${i}"
-               class="remarks-input"
-               placeholder="Type custom finding…"
-               style="margin-top:6px;display:none"
-               oninput="saveCustomFinding(${i},this)">
-      </td>
-      <td class="td-before-img">
-        ${bImg ? `<img class="img-cell" src="${bImg.dataURL}">` : '—'}
-      </td>
-      <td class="td-after-img">
-        <div class="drop-slot" id="update-slot-${i}"
-             ondragover="slotDragOver(event,${i})"
-             ondragleave="slotDragLeave(${i})"
-             ondrop="slotDrop(event,${i},'update-after')"
-             onclick="slotClick(${i},'update-after')">
-          ${aImg
-            ? `<img class="img-cell" src="${aImg.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`
-            : `<span>📷</span><span style="font-size:10px">Drop here</span>`}
-        </div>
-      </td>
-      <td>
-        <textarea class="remarks-input" data-row="${i}" onchange="saveRowRemarks(${i},this)" placeholder="Remarks…">${row.remarks||''}</textarea>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+  rebuildPhotoTable(prefix);
 }
 
 // ═══════════════════════════════════════════════
 //  REPORT GENERATION
 // ═══════════════════════════════════════════════
-function generateReport(isUpdate) {
+function generateReport() {
   saveFindings();
 
   const output = document.getElementById('report-output');
@@ -2082,20 +1929,26 @@ function buildReportHTML() {
   const rawDate = state.reportDate;
   const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
 
-  // Cover title = inspection type in upper case e.g. "MAINTENANCE INSPECTION REPORT"
   const coverTitle = (type.toUpperCase() + '\nREPORT').replace(/\n/, '<br>');
 
-  const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
+  const afterPool = state.afterImages;
 
-  // Total pages
+  // Only rows that actually have at least one populated field are real rows.
+  // Rows with a before image are always real (every before photo gets a row);
+  // fully-empty placeholder rows are never padded in, so no blank
+  // rows/columns are created just to fill out a page.
+  const realRows = state.rows.filter(r =>
+    r.beforeId !== null || r.afterId !== null || (r.finding && r.finding.trim()) || (r.remarks && r.remarks.trim())
+  );
+
   const ROWS_PER_PAGE = 5;
   const findingChunks = [];
-  for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
-    findingChunks.push(state.rows.slice(i, i + ROWS_PER_PAGE).map((r, j) => ({ ...r, globalIdx: i + j })));
+  for (let i = 0; i < realRows.length; i += ROWS_PER_PAGE) {
+    findingChunks.push(realRows.slice(i, i + ROWS_PER_PAGE));
   }
   const totalPages = 1 + findingChunks.length;
 
-  // ── PAGE 1: Cover — exact replica of reference PDF ──
+  // ── PAGE 1: Cover ──
   let html = `
   <div class="report-page" id="report-page-1">
     <div class="report-page-header">
@@ -2129,13 +1982,8 @@ function buildReportHTML() {
   </div>
   `;
 
-  // ── PAGES 2+: Findings ──
+  // ── PAGES 2+: Findings — only real rows, no empty padding rows ──
   findingChunks.forEach((chunk, pageIdx) => {
-    // Pad chunk to always 5 rows so table fills the page
-    while (chunk.length < ROWS_PER_PAGE) {
-      chunk.push({ finding: '', beforeId: null, afterId: null, remarks: '' });
-    }
-
     html += `
     <div class="report-page" id="report-page-${pageIdx + 2}">
       <div class="report-page-header">
@@ -2209,7 +2057,6 @@ async function downloadPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-    // A4 in mm
     const A4_W = 210;
     const A4_H = 297;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -2219,14 +2066,13 @@ async function downloadPDF() {
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i];
 
-      // Force exact A4 pixel size before capture
       const prevW = page.style.width;
       const prevH = page.style.height;
       page.style.width  = '794px';
       page.style.height = '1123px';
 
       const canvas = await html2canvas(page, {
-        scale: 2.5,           // high DPI for crisp images
+        scale: 2.5,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -2242,7 +2088,6 @@ async function downloadPDF() {
 
       if (i > 0) pdf.addPage('a4', 'portrait');
 
-      // Place image to fill A4 exactly
       pdf.addImage(imgData, 'JPEG', 0, 0, A4_W, A4_H, '', 'FAST');
     }
 
@@ -2274,13 +2119,14 @@ async function downloadWord() {
     const type = state.inspectionType;
     const rawDate = state.reportDate;
     const dateFormatted = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-GB') : '';
-    const afterPool = state.isUpdateMode ? state.updateAfterImages : state.afterImages;
+    const afterPool = state.afterImages;
     const ROWS_PER_PAGE = 5;
     const coverTitle = type.toUpperCase() + ' REPORT';
 
-    // Build an HTML document that Word can open
-    // We embed images as base64 data URIs
-    const pages = document.querySelectorAll('.report-page');
+    const realRows = state.rows.filter(r =>
+      r.beforeId !== null || r.afterId !== null || (r.finding && r.finding.trim()) || (r.remarks && r.remarks.trim())
+    );
+
     let bodyHtml = '';
 
     // Cover page
@@ -2301,15 +2147,14 @@ async function downloadWord() {
       </div>
     `;
 
-    // Findings pages
+    // Findings pages — real rows only
     const chunks = [];
-    for (let i = 0; i < state.rows.length; i += ROWS_PER_PAGE) {
-      chunks.push(state.rows.slice(i, i + ROWS_PER_PAGE));
+    for (let i = 0; i < realRows.length; i += ROWS_PER_PAGE) {
+      chunks.push(realRows.slice(i, i + ROWS_PER_PAGE));
     }
     const totalPages = 1 + chunks.length;
 
     chunks.forEach((chunk, pi) => {
-      while (chunk.length < ROWS_PER_PAGE) chunk.push({ finding:'', beforeId:null, afterId:null, remarks:'' });
       let rows = '';
       chunk.forEach(row => {
         const bImg = state.beforeImages.find(x => x.id === row.beforeId);
